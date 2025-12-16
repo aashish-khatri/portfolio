@@ -626,6 +626,7 @@
                     <a href="#about" class="nav-link">About</a>
                     <a href="#experience" class="nav-link">Experience</a>
                     <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#blog" class="nav-link">Blog</a>
                     <a href="#contact" class="btn btn-primary focus-visible">Get in Touch</a>
                 </div>
 
@@ -1017,6 +1018,183 @@
             </div>
         </div>
     </section>
+    <!-- Blog Section -->
+    <section id="blog" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Latest Insights</div>
+                <h2 class="font-display text-heading-1">Technical Articles & Thoughts</h2>
+                <p class="text-large text-secondary max-w-3xl mx-auto">
+                    Sharing insights on software engineering, system design, and modern development practices.
+                </p>
+            </div>
+
+            <div class="grid-2 mb-2xl">
+                <!-- Featured Blog Post -->
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="text-center">
+                            <div class="text-lg mb-2">System Design</div>
+                            <div class="text-xs">Architecture Patterns</div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <div class="font-mono text-caption text-muted mb-sm">Dec 15, 2024</div>
+                        <h3 class="project-title">Building Scalable Microservices with Go and gRPC</h3>
+                        <p class="project-description text-body">
+                            Deep dive into designing resilient microservices architecture using Go, gRPC for
+                            inter-service communication, and implementing circuit breakers for fault tolerance.
+                        </p>
+                        <div class="tech-stack mb-lg">
+                            <span class="tech-tag">Go</span>
+                            <span class="tech-tag">gRPC</span>
+                            <span class="tech-tag">Microservices</span>
+                            <span class="tech-tag">System Design</span>
+                        </div>
+                        <div class="flex justify-between items-center text-small">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <div class="font-semibold">8</div>
+                                    <div class="text-muted">min read</div>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">245</div>
+                                    <div class="text-muted">views</div>
+                                </div>
+                            </div><a href="blog-post.html?id=microservices-go-grpc"
+                                class="text-primary font-medium hover:underline focus-visible">Read Article →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Second Blog Post -->
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="text-center">
+                            <div class="text-lg mb-2">Database Design</div>
+                            <div class="text-xs">Performance Optimization</div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <div class="font-mono text-caption text-muted mb-sm">Nov 28, 2024</div>
+                        <h3 class="project-title">PostgreSQL Query Optimization Strategies</h3>
+                        <p class="project-description text-body">
+                            Comprehensive guide to optimizing PostgreSQL queries, indexing strategies, and performance
+                            monitoring for high-throughput applications.
+                        </p>
+                        <div class="tech-stack mb-lg">
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">Performance</span>
+                            <span class="tech-tag">Database</span>
+                        </div>
+                        <div class="flex justify-between items-center text-small">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <div class="font-semibold">12</div>
+                                    <div class="text-muted">min read</div>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">189</div>
+                                    <div class="text-muted">views</div>
+                                </div>
+                            </div>
+                                        <a href="blog-post.html?id=postgresql-optimization"
+                                class="text-primary font-medium hover:underline focus-visible">Read Article →</a>
+
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Additional Blog Posts Grid -->
+            <!-- <div class="text-center mb-2xl">
+                <h3 class="font-display text-heading-3 mb-lg">More Articles</h3>
+            </div>
+
+            <div class="grid-3">
+                <article class="card-minimal">
+                    <div class="font-mono text-caption text-muted mb-sm">Nov 10, 2024</div>
+                    <h4 class="font-semibold text-body mb-sm">Event-Driven Architecture with Go</h4>
+                    <p class="text-small text-muted mb-md">
+                        Implementing robust event-driven systems using Go, message queues, and event sourcing patterns.
+                    </p>
+                    <div class="tech-stack mb-md">
+                        <span class="tech-tag">Go</span>
+                        <span class="tech-tag">RabbitMQ</span>
+                        <span class="tech-tag">Events</span>
+                    </div>
+                    <div class="flex justify-between items-center text-small">
+                        <span class="text-muted">6 min read</span>
+                        <a href="#" class="text-primary font-medium hover:underline focus-visible">Read →</a>
+                    </div>
+                </article>
+
+                <article class="card-minimal">
+                    <div class="font-mono text-caption text-muted mb-sm">Oct 22, 2024</div>
+                    <h4 class="font-semibold text-body mb-sm">Docker Multi-Stage Builds for Go</h4>
+                    <p class="text-small text-muted mb-md">
+                        Optimizing Go application deployments with multi-stage Docker builds and minimal base images.
+                    </p>
+                    <div class="tech-stack mb-md">
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">Go</span>
+                        <span class="tech-tag">DevOps</span>
+                    </div>
+                    <div class="flex justify-between items-center text-small">
+                        <span class="text-muted">4 min read</span>
+                        <a href="#" class="text-primary font-medium hover:underline focus-visible">Read →</a>
+                    </div>
+                </article>
+
+                <article class="card-minimal">
+                    <div class="font-mono text-caption text-muted mb-sm">Oct 05, 2024</div>
+                    <h4 class="font-semibold text-body mb-sm">GraphQL Federation at Scale</h4>
+                    <p class="text-small text-muted mb-md">
+                        Managing distributed GraphQL schemas across microservices with Apollo Federation.
+                    </p>
+                    <div class="tech-stack mb-md">
+                        <span class="tech-tag">GraphQL</span>
+                        <span class="tech-tag">Apollo</span>
+                        <span class="tech-tag">Federation</span>
+                    </div>
+                    <div class="flex justify-between items-center text-small">
+                        <span class="text-muted">10 min read</span>
+                        <a href="#" class="text-primary font-medium hover:underline focus-visible">Read →</a>
+                    </div>
+                </article>
+            </div> -->
+            <div class="card-minimal mt-xl text-center">
+                <div class="text-small text-muted mb-sm">Want to read more?</div>
+                <a href="blogs.html" class="text-primary font-medium hover:underline focus-visible text-body">
+                    Explore All Technical Articles →
+                </a>
+            </div>
+
+
+            <!-- Blog CTA -->
+            <!-- <div class="text-center mt-2xl">
+                <div class="card-minimal max-w-2xl mx-auto">
+                    <h3 class="font-display text-heading-3 mb-md">Stay Updated</h3>
+                    <p class="text-secondary text-body mb-lg">
+                        Subscribe to get notified about new articles on system design, Go programming, and modern
+                        software architecture.
+                    </p>
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+                        onsubmit="handleNewsletterSubmit(event)">
+                        <input type="email" placeholder="your.email@example.com"
+                            class="flex-1 px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-body"
+                            required />
+                        <button type="submit" class="btn btn-primary focus-visible">Subscribe</button>
+                    </form>
+                    <div class="text-small text-muted mt-sm">
+                        No spam. Unsubscribe anytime.
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
 
 
     <!-- Contact Section -->
@@ -1209,6 +1387,16 @@
         document.querySelectorAll('.card, .timeline-item, .project-card').forEach((el) => {
             observer.observe(el);
         });
+        // Newsletter subscription handler
+        function handleNewsletterSubmit(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+
+            // Replace with your actual newsletter subscription logic
+            alert(`Thank you for subscribing with ${email}! You'll receive updates about new articles.`);
+            event.target.reset();
+        }
+
     </script>
 </body>
 

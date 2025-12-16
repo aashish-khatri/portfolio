@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Technical Blog | Aashish Khatri - Software Engineering Insights</title>
+    <meta name="title" content="Technical Blog | Aashish Khatri - Software Engineering Insights">
+    <meta name="description" content="In-depth articles on Go, system design, microservices, and modern backend development practices. Learn from real-world engineering experiences.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aashishkhatri.dev/blog">
+    <meta property="og:title" content="Technical Blog | Aashish Khatri">
+    <meta property="og:description" content="In-depth articles on Go, system design, microservices, and modern backend development practices.">
+    <meta property="og:image" content="https://placehold.co/1200x630/1A1A1A/ffffff?text=Technical+Blog">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://aashishkhatri.dev/blog">
+    <meta property="twitter:title" content="Technical Blog | Aashish Khatri">
+    <meta property="twitter:description" content="In-depth articles on Go, system design, microservices, and modern backend development practices.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/1A1A1A/ffffff?text=Technical+Blog">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Refined Monochromatic Palette */
+            --primary: #1A1A1A;
+            --primary-light: #2D2D2D;
+            --primary-lighter: #404040;
+            --accent: #6B6B6B;
+            --accent-light: #808080;
+            --accent-lighter: #999999;
+
+            /* Text Hierarchy */
+            --text-primary: #0A0A0A;
+            --text-secondary: #404040;
+            --text-muted: #6B6B6B;
+            --text-subtle: #999999;
+
+            /* Background System */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #FAFAFA;
+            --bg-tertiary: #F5F5F5;
+            --bg-quaternary: #F0F0F0;
+
+            /* Border System */
+            --border-primary: #E5E5E5;
+            --border-secondary: #EBEBEB;
+            --border-tertiary: #F0F0F0;
+
+            /* Shadow System */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+            /* Spacing System */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+
+            /* Typography Scale */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-5xl: 3rem;
+            --text-6xl: 3.75rem;
+            --text-7xl: 4.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: var(--text-base);
+            letter-spacing: -0.011em;
+        }
+
+        /* Typography System - EXACT MATCH */
+        .font-display {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .font-body {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 400;
+            letter-spacing: -0.011em;
+            line-height: 1.6;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+            font-weight: 400;
+            letter-spacing: 0;
+            line-height: 1.5;
+        }
+
+        .text-hero {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+        }
+
+        .text-heading-1 {
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .text-heading-2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.015em;
+        }
+
+        .text-heading-3 {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        .text-large {
+            font-size: var(--text-xl);
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: -0.011em;
+        }
+
+        .text-body {
+            font-size: var(--text-base);
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: -0.011em;
+        }
+
+        .text-small {
+            font-size: var(--text-sm);
+            font-weight: 400;
+            line-height: 1.5;
+            letter-spacing: -0.006em;
+        }
+
+        .text-caption {
+            font-size: var(--text-xs);
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-muted { color: var(--text-muted); }
+        .text-subtle { color: var(--text-subtle); }
+
+        /* Layout - EXACT MATCH */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+
+        .section-padding {
+            padding: var(--space-3xl) 0;
+        }
+
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: var(--space-xl); 
+        }
+
+        .grid-3 { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: var(--space-lg); 
+        }
+
+        /* Spacing Utilities - EXACT MATCH */
+        .mb-0 { margin-bottom: 0; }
+        .mb-xs { margin-bottom: var(--space-xs); }
+        .mb-sm { margin-bottom: var(--space-sm); }
+        .mb-md { margin-bottom: var(--space-md); }
+        .mb-lg { margin-bottom: var(--space-lg); }
+        .mb-xl { margin-bottom: var(--space-xl); }
+        .mb-2xl { margin-bottom: var(--space-2xl); }
+        .mb-3xl { margin-bottom: var(--space-3xl); }
+
+        .mt-sm { margin-top: var(--space-sm); }
+        .mt-md { margin-top: var(--space-md); }
+        .mt-lg { margin-top: var(--space-lg); }
+        .mt-xl { margin-top: var(--space-xl); }
+        .mt-2xl { margin-top: var(--space-2xl); }
+
+        /* Header - EXACT MATCH TO INDEX.HTML */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-primary);
+            z-index: 50;
+            padding: var(--space-md) 0;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .nav-brand {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 450;
+            font-size: var(--text-base);
+            transition: color 0.2s ease;
+            letter-spacing: -0.006em;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main {
+            min-height: 100vh;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+            margin-bottom: var(--space-md);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        /* Blog Cards */
+        .blog-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .blog-card:hover {
+            border-color: var(--border-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .blog-card-image {
+            height: 200px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .blog-card-content {
+            padding: var(--space-xl);
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+        }
+
+        .blog-title {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+            line-height: 1.6;
+        }
+
+        .blog-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-lg);
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--text-xs);
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 4px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .blog-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .read-more {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .read-more:hover {
+            opacity: 0.7;
+        }
+
+        /* Blog Controls */
+        .blog-controls {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: var(--text-base);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--text-primary);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--border-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-primary);
+            padding: var(--space-2xl) 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-lg);
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--text-primary);
+        }
+
+        /* Text alignment utilities */
+        .text-center { text-align: center; }
+        .max-w-3xl { max-width: 48rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* Responsive Design - EXACT MATCH */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--space-md);
+            }
+
+            .section-padding {
+                padding: var(--space-2xl) 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .blog-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                min-width: auto;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        .blog-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - EXACT STRUCTURE MATCH -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="nav-brand">Aashish Khatri</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+                <li><a href="blogs.html" class="nav-link active">Blog</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="section-padding">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">Technical Writing</div>
+                    <h1 class="font-display text-heading-1">Engineering Insights</h1>
+                    <p class="text-large text-secondary max-w-3xl mx-auto">
+                        Deep dives into system design, backend development, and modern software engineering practices.
+                        Sharing real-world experiences building scalable distributed systems.
+                    </p>
+                </div>
+
+                <!-- Blog Controls -->
+                <div class="blog-controls">
+                    <input 
+                        type="text" 
+                        class="search-input font-body" 
+                        placeholder="Search articles..." 
+                        id="searchInput"
+                        onkeyup="filterBlogs()"
+                    >
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterByTag('all')">All</button>
+                        <button class="filter-btn" onclick="filterByTag('system-design')">System Design</button>
+                        <button class="filter-btn" onclick="filterByTag('go')">Go</button>
+                        <button class="filter-btn" onclick="filterByTag('database')">Database</button>
+                        <button class="filter-btn" onclick="filterByTag('microservices')">Microservices</button>
+                        <button class="filter-btn" onclick="filterByTag('devops')">DevOps</button>
+                    </div>
+                </div>
+
+                <!-- Blog Posts Grid -->
+                <div class="grid-2" id="blogGrid">
+                    <!-- Featured Article -->
+                    <article class="blog-card" data-tags="go,microservices,system-design" data-title="Building Scalable Microservices with Go and gRPC">
+                        <div class="blog-card-image">
+                            <div class="text-center">
+                                <div class="text-large mb-sm">🏗️</div>
+                                <div class="text-small text-muted">System Architecture</div>
+                            </div>
+                        </div>
+                        <div class="blog-card-content">
+                            <div class="blog-meta">
+                                <span>Dec 15, 2024</span>
+                                <span>•</span>
+                                <span>8 min read</span>
+                                <span>•</span>
+                                <span>245 views</span>
+                            </div>
+                            <h2 class="blog-title">Building Scalable Microservices with Go and gRPC</h2>
+                            <p class="blog-excerpt">
+                                Deep dive into designing resilient microservices architecture using Go, gRPC for inter-service communication, and implementing circuit breakers for fault tolerance.
+                            </p>
+                            <div class="blog-tags">
+                                <span class="tag">Go</span>
+                                <span class="tag">gRPC</span>
+                                <span class="tag">Microservices</span>
+                                <span class="tag">System Design</span>
+                            </div>
+                            <div class="blog-footer">
+                                <div class="text-small text-muted">Featured Article</div>
+                                <a href="blog-post.html?id=microservices-go-grpc" class="read-more">Read Article →</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Additional articles would continue here... -->
+                    <article class="blog-card" data-tags="database,postgresql,performance" data-title="PostgreSQL Query Optimization">
+                        <div class="blog-card-image">
+                            <div class="text-center">
+                                <div class="text-large mb-sm">🗄️</div>
+                                <div class="text-small text-muted">Database Performance</div>
+                            </div>
+                        </div>
+                        <div class="blog-card-content">
+                            <div class="blog-meta">
+                                <span>Nov 28, 2024</span>
+                                <span>•</span>
+                                <span>12 min read</span>
+                                <span>•</span>
+                                <span>189 views</span>
+                            </div>
+                            <h2 class="blog-title">PostgreSQL Query Optimization Strategies</h2>
+                            <p class="blog-excerpt">
+                                Comprehensive guide to optimizing PostgreSQL queries, indexing strategies, and performance monitoring for high-throughput applications.
+                            </p>
+                            <div class="blog-tags">
+                                <span class="tag">PostgreSQL</span>
+                                <span class="tag">SQL</span>
+                                <span class="tag">Performance</span>
+                                <span class="tag">Database</span>
+                            </div>
+                            <div class="blog-footer">
+                                <div class="text-small text-muted">Database Series</div>
+                                <a href="blog-post.html?id=postgresql-optimization" class="read-more">Read Article →</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="text-center mt-2xl">
+                    <button class="filter-btn" onclick="loadMorePosts()">Load More Articles</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="mailto:hello@aashishkhatri.dev" class="footer-link">Email</a>
+                <a href="https://linkedin.com/in/aashishkhatri" class="footer-link">LinkedIn</a>
+                <a href="https://github.com/aashishkhatri" class="footer-link">GitHub</a>
+                <a href="https://twitter.com/aashishkhatri" class="footer-link">Twitter</a>
+            </div>
+            <p class="text-small text-muted">
+                © 2024 Aashish Khatri. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let currentFilter = 'all';
+        
+        function filterByTag(tag) {
+            currentFilter = tag;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            filterBlogs();
+        }
+        
+        function filterBlogs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const blogCards = document.querySelectorAll('.blog-card');
+            
+            blogCards.forEach(card => {
+                const tags = card.dataset.tags;
+                const title = card.dataset.title.toLowerCase();
+                const content = card.textContent.toLowerCase();
+                
+                const matchesFilter = currentFilter === 'all' || tags.includes(currentFilter);
+                const matchesSearch = searchTerm === '' || title.includes(searchTerm) || content.includes(searchTerm);
+                
+                if (matchesFilter && matchesSearch) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.6s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function loadMorePosts() {
+            alert('Loading more articles... (This would load additional blog posts in a real implementation)');
+        }
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterBlogs();
+            }
+        });
+    </script>
+</body>
+</html>
