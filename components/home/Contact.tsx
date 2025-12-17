@@ -99,7 +99,7 @@ export default function Contact() {
               <button type="submit" className="w-full py-4 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-all transform hover:-translate-y-0.5 shadow-md hover:shadow-lg">
                 Send Message
               </button>
-              <p className="text-xs text-text-muted text-center">Powered by Formspree. Replace YOUR_FORM_ID with your form ID.</p>
+              <p className="text-xs text-text-muted text-center">Powered by Formspree.</p>
             </form>
           </div>
         </div>
