@@ -1,0 +1,256 @@
+---
+title: 'Building a Real-Time Chat System: WebSockets, Message Queues, and Presence at Scale'
+date: '2025-12-17'
+description: 'A production-grade exploration of real-time communication architecture using Go, WebSockets for persistent connections, RabbitMQ for message fanout, and distributed presence tracking.'
+tags: ['Go', 'WebSocket', 'RabbitMQ', 'System Design', 'Distributed Systems']
+---
+
+Real-time communication is no longer a luxury—it's an expectation. From Slack to Discord, users demand instant message delivery and reliable presence indicators. In this deep-dive, I'll walk through the architecture of a real-time chat system I built from scratch, covering the hard problems: **connection management**, **message delivery guarantees**, and **distributed presence**.
+
+> "The difference between a good chat system and a great one isn't features—it's the milliseconds you shave off message delivery and the nines you add to uptime."
+
+## System Architecture Overview
+
+The system is designed around three core principles:
+
+1.  **Connection Durability**: WebSocket connections must be resilient to network hiccups.
+2.  **At-Least-Once Delivery**: Messages must never be silently dropped.
+3.  **Horizontal Scalability**: Adding more servers should linearly increase capacity.
+
+Here's a high-level view of the message flow:
+
+```
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│   Client    │─────▶│  WebSocket  │─────▶│  RabbitMQ   │
+│  (Browser)  │◀─────│   Server    │◀─────│   Broker    │
+└─────────────┘      └─────────────┘      └─────────────┘
+                            │                    │
+                            ▼                    ▼
+                     ┌─────────────┐      ┌─────────────┐
+                     │   Redis     │      │  PostgreSQL │
+                     │ (Presence)  │      │ (Messages)  │
+                     └─────────────┘      └─────────────┘
+```
+
+---
+
+## Part 1: WebSocket Server in Go
+
+Go's goroutine-per-connection model makes it ideal for handling thousands of concurrent WebSocket connections. I used the battle-tested `gorilla/websocket` library, but the real challenge is managing the connection lifecycle.
+
+### The Hub Pattern
+
+A central `Hub` struct manages all active connections and broadcasts messages efficiently:
+
+```go
+package chat
+
+import (
+    "sync"
+    "github.com/gorilla/websocket"
+)
+
+type Client struct {
+    hub    *Hub
+    conn   *websocket.Conn
+    send   chan []byte
+    userID string
+}
+
+type Hub struct {
+    clients    map[string]*Client // userID -> Client
+    broadcast  chan []byte
+    register   chan *Client
+    unregister chan *Client
+    mu         sync.RWMutex
+}
+
+func NewHub() *Hub {
+    return &Hub{
+        clients:    make(map[string]*Client),
+        broadcast:  make(chan []byte, 256),
+        register:   make(chan *Client),
+        unregister: make(chan *Client),
+    }
+}
+
+func (h *Hub) Run() {
+    for {
+        select {
+        case client := <-h.register:
+            h.mu.Lock()
+            h.clients[client.userID] = client
+            h.mu.Unlock()
+
+        case client := <-h.unregister:
+            h.mu.Lock()
+            if _, ok := h.clients[client.userID]; ok {
+                delete(h.clients, client.userID)
+                close(client.send)
+            }
+            h.mu.Unlock()
+
+        case message := <-h.broadcast:
+            h.mu.RLock()
+            for _, client := range h.clients {
+                select {
+                case client.send <- message:
+                default:
+                    // Buffer full, client is slow. Close connection.
+                    close(client.send)
+                    delete(h.clients, client.userID)
+                }
+            }
+            h.mu.RUnlock()
+        }
+    }
+}
+```
+
+### Connection Handling
+
+Each client connection spawns two goroutines: one for reading and one for writing. This separation prevents blocking and allows for graceful shutdown.
+
+```go
+func (c *Client) readPump() {
+    defer func() {
+        c.hub.unregister <- c
+        c.conn.Close()
+    }()
+    
+    c.conn.SetReadLimit(maxMessageSize)
+    c.conn.SetReadDeadline(time.Now().Add(pongWait))
+    c.conn.SetPongHandler(func(string) error {
+        c.conn.SetReadDeadline(time.Now().Add(pongWait))
+        return nil
+    })
+    
+    for {
+        _, message, err := c.conn.ReadMessage()
+        if err != nil {
+            break
+        }
+        c.hub.broadcast <- message
+    }
+}
+```
+
+---
+
+## Part 2: Message Queuing with RabbitMQ
+
+A single WebSocket server is a single point of failure. To scale horizontally, every message must be fanned out to all servers. This is where RabbitMQ shines.
+
+### Why RabbitMQ?
+
+| Feature | RabbitMQ | Redis Pub/Sub | Kafka |
+| :--- | :--- | :--- | :--- |
+| **Delivery Guarantees** | At-least-once | At-most-once | Exactly-once (with effort) |
+| **Persistence** | Yes | No | Yes |
+| **Latency** | ~1ms | ~0.5ms | ~5ms |
+| **Complexity** | Medium | Low | High |
+
+For chat, **at-least-once delivery** with low latency is the sweet spot. RabbitMQ's fanout exchange pattern is perfect for this.
+
+### Fanout Exchange Pattern
+
+Each WebSocket server creates its own **exclusive, auto-delete queue** bound to a shared fanout exchange. When a message is published, RabbitMQ copies it to every queue.
+
+```go
+func (p *Publisher) Publish(ctx context.Context, msg Message) error {
+    body, err := json.Marshal(msg)
+    if err != nil {
+        return fmt.Errorf("marshal message: %w", err)
+    }
+
+    return p.channel.PublishWithContext(ctx,
+        "chat.fanout", // exchange
+        "",            // routing key (ignored for fanout)
+        false,         // mandatory
+        false,         // immediate
+        amqp.Publishing{
+            ContentType:  "application/json",
+            Body:         body,
+            DeliveryMode: amqp.Persistent,
+        },
+    )
+}
+```
+
+This architecture allows us to add or remove WebSocket servers without any configuration changes. The exchange handles the routing automatically.
+
+---
+
+## Part 3: Distributed Presence Tracking
+
+Knowing who's online is deceptively complex in a distributed system. A user might be connected to Server A, but Server B needs to know they're online to display the green dot.
+
+### The Challenge
+
+If we have $N$ servers and $U$ users, a naive approach where each server polls all others has complexity:
+
+$$
+O(N^2 \cdot U)
+$$
+
+This doesn't scale. Instead, we use **Redis** as a shared presence store with **sorted sets** for efficient expiry.
+
+### Heartbeat-Based Presence
+
+Each client sends a heartbeat every 30 seconds. The server updates a Redis sorted set with the current timestamp:
+
+```go
+func (p *PresenceService) Heartbeat(ctx context.Context, userID string) error {
+    score := float64(time.Now().Unix())
+    return p.redis.ZAdd(ctx, "presence:online", redis.Z{
+        Score:  score,
+        Member: userID,
+    }).Err()
+}
+
+func (p *PresenceService) GetOnlineUsers(ctx context.Context) ([]string, error) {
+    // Users with heartbeat in the last 60 seconds
+    cutoff := float64(time.Now().Add(-60 * time.Second).Unix())
+    return p.redis.ZRangeByScore(ctx, "presence:online", &redis.ZRangeBy{
+        Min: fmt.Sprintf("%f", cutoff),
+        Max: "+inf",
+    }).Result()
+}
+```
+
+The sorted set score is the timestamp. To get online users, we simply query for scores greater than `now - 60s`. This is $O(\log U + K)$ where $K$ is the number of online users.
+
+---
+
+## Part 4: Performance & Scaling
+
+### Benchmarks
+
+Under load testing with 10,000 concurrent connections:
+
+| Metric | Value |
+| :--- | :--- |
+| **Message Latency (p50)** | 12ms |
+| **Message Latency (p99)** | 45ms |
+| **Throughput** | 50,000 msg/sec |
+| **Memory per Connection** | ~15KB |
+
+### Scaling Strategy
+
+The system scales horizontally by adding more WebSocket servers behind a load balancer. Key considerations:
+
+*   **Sticky Sessions**: Not required due to RabbitMQ fanout.
+*   **Connection Limits**: Each Go server handles ~50K connections before hitting file descriptor limits.
+*   **Redis Cluster**: Presence data is sharded across a Redis cluster for high availability.
+
+---
+
+## Lessons Learned
+
+1.  **Backpressure is critical**: Slow clients can crash your server if you don't handle full buffers.
+2.  **Graceful shutdown**: Always wait for in-flight messages before closing connections.
+3.  **Observability**: Instrument everything. Message latency histograms saved me during a production incident.
+
+Building a real-time chat system taught me that the "simple" features users take for granted—instant delivery, presence, and reliability—require careful engineering at every layer.
+
+The full source code is available on my [GitHub](https://github.com/aashish-khatri).

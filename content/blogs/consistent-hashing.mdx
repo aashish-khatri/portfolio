@@ -1,0 +1,115 @@
+---
+title: 'Consistent Hashing: A Deep Dive into Distributed Load Balancing'
+date: '2025-12-18'
+description: 'Master the core algorithms behind scalable distributed systems. We explore Consistent Hashing, from its mathematical foundations to a production-ready Go implementation.'
+tags: ['System Design', 'Algorithms', 'Go', 'Distributed Systems']
+---
+
+In the world of distributed systems, horizontal scaling is the holy grail. But as we add more servers to handle growing traffic, how do we efficiently distribute requests? 
+
+> "Scaling is not just about adding resources; it's about adding resources *without* disrupting the system."
+
+This article explores **Consistent Hashing**, the algorithm that powers DynamoDB, Cassandra, and many CDN architectures.
+
+## The Problem with Modulo Hashing
+
+The naive approach to load balancing is basic modular arithmetic:
+
+$$
+\text{server\_index} = \text{hash}(\text{key}) \pmod N
+$$
+
+Where $N$ is the number of servers. This works perfectly until $N$ changes. If a server crashes or we add a new one, $N$ changes, and almost **all keys are remapped**.
+
+Mathematically, the probability of a key moving is:
+
+$$
+P(\text{move}) = \frac{N}{N+1} \approx 1
+$$
+
+This causes a **cache stampede**, potentially bringing down your entire database layer.
+
+## Enter Consistent Hashing
+
+Consistent hashing solves this by mapping both keys and servers to a unit circle, or the "hash ring".
+
+1.  Hash servers to integers in the range $[0, 2^{32}-1]$.
+2.  Hash keys to the same range.
+3.  Map a key to the first server found moving clockwise on the ring.
+
+### The Algorithm
+
+Here is a robust implementation of a Consistent Hash Ring in Go. We use `crc32` for hashing and `sort.Search` for efficient lookups ($O(\log N)$).
+
+```go
+package consistenthash
+
+import (
+    "hash/crc32"
+    "sort"
+    "strconv"
+)
+
+type Hash func(data []byte) uint32
+
+type Map struct {
+    hash     Hash
+    replicas int            // Virtual nodes per real node
+    keys     []int          // Sorted hash ring
+    hashMap  map[int]string // Map hash -> server name
+}
+
+func New(replicas int, fn Hash) *Map {
+    m := &Map{
+        replicas: replicas,
+        hash:     fn,
+        hashMap:  make(map[int]string),
+    }
+    if m.hash == nil {
+        m.hash = crc32.ChecksumIEEE
+    }
+    return m
+}
+
+// Add adds some keys to the hash.
+func (m *Map) Add(keys ...string) {
+    for _, key := range keys {
+        for i := 0; i < m.replicas; i++ {
+            hash := int(m.hash([]byte(strconv.Itoa(i) + key)))
+            m.keys = append(m.keys, hash)
+            m.hashMap[hash] = key
+        }
+    }
+    sort.Ints(m.keys)
+}
+```
+
+### Virtual Nodes
+
+To ensure uniform distribution even with a small number of servers, we introduce **Virtual Nodes**. Each physical server is hashed multiple times ($K$ replicas) onto the ring.
+
+If $X$ be the random variable representing the load on a server. With $K$ virtual nodes, the standard deviation of load distribution decreases significantly:
+
+$$
+\sigma \propto \frac{1}{\sqrt{K}}
+$$
+
+This creates a smoother distribution of keys, preventing "hot spots" where one server handles uneven traffic.
+
+## Complexity Analysis
+
+Let's break down the performance characteristics:
+
+| Operation | Complexity | Description |
+| :--- | :--- | :--- |
+| **Add Node** | $O(K \log N)$ | Adding virtual nodes and resorting ring |
+| **Remove Node** | $O(K \log N)$ | Removing virtual nodes |
+| **Lookup** | $O(\log N)$ | Binary search to find next server |
+
+Where $N$ is the total number of virtual nodes on the ring.
+
+## Conclusion
+
+Consistent Hashing is a fundamental building block of modern distributed systems. By minimizing key reorganization during scaling events, it allows systems to grow elastically and resiliently.
+
+Whether you are designing a distributed cache, a sharded database, or a peer-to-peer network, understanding this algorithm is essential for any backend engineer.

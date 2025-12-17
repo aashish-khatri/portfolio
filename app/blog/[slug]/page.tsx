@@ -4,6 +4,14 @@ import { getBlogPost, getBlogPosts } from "@/lib/blog";
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import TechTag from "@/components/shared/TechTag";
 import { format } from 'date-fns';
+import rehypeHighlight from 'rehype-highlight';
+import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
+import rehypeKatex from 'rehype-katex';
+
+// Import styles
+import 'highlight.js/styles/github.css';
+import 'katex/dist/katex.min.css';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
@@ -21,6 +29,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           return format(new Date(post.date), 'MMMM d, yyyy');
       } catch {
           return post.date;
+      }
+  }
+
+  const options = {
+      mdxOptions: {
+          remarkPlugins: [remarkGfm, remarkMath],
+          rehypePlugins: [rehypeHighlight, rehypeKatex],
       }
   }
 
@@ -48,12 +63,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="prose prose-lg prose-neutral dark:prose-invert max-w-none font-body 
                 prose-headings:font-display prose-headings:font-bold prose-headings:text-text-primary
                 prose-p:text-text-secondary prose-p:leading-relaxed
+                prose-strong:text-text-primary prose-strong:font-semibold
+                prose-li:text-text-secondary prose-li:leading-relaxed
                 prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                prose-code:text-primary prose-code:bg-bg-tertiary prose-code:px-1 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-                prose-pre:bg-bg-secondary prose-pre:border prose-pre:border-border-primary prose-pre:text-text-secondary
+                prose-code:text-text-primary prose-code:bg-bg-tertiary prose-code:px-1 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+                prose-pre:bg-bg-tertiary prose-pre:text-text-secondary prose-pre:rounded-lg
+                prose-th:text-text-primary prose-th:font-semibold prose-td:text-text-secondary
                 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-bg-secondary prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-text-secondary
+                [&_.katex-display]:my-8 [&_.katex-display]:overflow-x-auto [&_.katex]:text-text-primary
             ">
-                <MDXRemote source={post.content} />
+                <MDXRemote source={post.content} options={options} />
             </div>
         </div>
       </article>
