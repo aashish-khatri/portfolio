@@ -3,6 +3,7 @@ import Footer from "@/components/shared/Footer";
 import { getBlogPost, getBlogPosts, getRelatedPosts } from "@/lib/blog";
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import TechTag from "@/components/shared/TechTag";
+import ShareButtons from "@/components/blog/ShareButtons";
 import { format } from 'date-fns';
 import rehypeHighlight from 'rehype-highlight';
 import remarkMath from 'remark-math';
@@ -25,6 +26,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const post = getBlogPost(slug);
   const relatedPosts = getRelatedPosts(slug, 3);
+  const siteUrl = 'https://aashishkhatri.dev';
 
   const formattedDate = () => {
       try {
@@ -75,6 +77,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 [&_.katex-display]:my-8 [&_.katex-display]:overflow-x-auto [&_.katex]:text-text-primary
             ">
                 <MDXRemote source={post.content} options={options} />
+            </div>
+
+            {/* Share Section */}
+            <div className="mt-12 pt-8 border-t border-border-primary flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <ShareButtons title={post.title} url={`${siteUrl}/blog/${slug}`} />
             </div>
 
             {/* Related Posts */}

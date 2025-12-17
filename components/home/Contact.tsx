@@ -74,31 +74,32 @@ export default function Contact() {
 
           <div className="bg-bg-primary p-8 rounded-xl border border-border-primary shadow-sm hover:shadow-md transition-shadow">
             <h3 className="font-display text-2xl font-bold text-text-primary mb-6">Send a Message</h3>
-            <form className="space-y-6">
+            <form action="https://formspree.io/f/xwpggrkw" method="POST" className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Name *</label>
-                  <input type="text" required className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
+                  <input type="text" name="name" required className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Email *</label>
-                  <input type="email" required className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
+                  <input type="email" name="email" required className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
                 </div>
               </div>
               
               <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Subject</label>
-                  <input type="text" placeholder="Job opportunity, collaboration, etc." className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
+                  <input type="text" name="subject" placeholder="Job opportunity, collaboration, etc." className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
               </div>
               
               <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">Message *</label>
-                  <textarea required rows={4} placeholder="Tell me about the opportunity or project..." className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"></textarea>
+                  <textarea name="message" required rows={4} placeholder="Tell me about the opportunity or project..." className="w-full px-4 py-3 bg-white border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"></textarea>
               </div>
               
               <button type="submit" className="w-full py-4 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-all transform hover:-translate-y-0.5 shadow-md hover:shadow-lg">
                 Send Message
               </button>
+              <p className="text-xs text-text-muted text-center">Powered by Formspree. Replace YOUR_FORM_ID with your form ID.</p>
             </form>
           </div>
         </div>
@@ -106,3 +107,4 @@ export default function Contact() {
     </section>
   );
 }
+
