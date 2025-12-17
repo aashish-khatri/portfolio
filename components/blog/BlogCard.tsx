@@ -16,8 +16,7 @@ export default function BlogCard({ post }: { post: BlogPostMeta }) {
             <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-xs text-text-muted">
                 <span>{itemDate(post.date)}</span>
                 <span>•</span>
-                 {/* Read time placeholder or calculation if available */}
-                <span>5 min read</span> 
+                <span>{post.readingTime} min read</span>
             </div>
             
             <h2 className="font-display text-xl font-bold text-text-primary mb-3 leading-tight hover:text-primary-light transition-colors">

@@ -1,21 +1,24 @@
+"use client";
+
 import TechTag from '../shared/TechTag';
 import { Database, Layout, Box } from 'lucide-react';
+import { MotionSection, MotionStagger, MotionItem } from '../shared/Motion';
 
 export default function About() {
   return (
     <section id="about" className="py-24 md:py-32 bg-bg-secondary">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <MotionSection className="text-center mb-16">
           <div className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4">
              About Me
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
             Full-Stack Developer & Systems Architect
           </h2>
-        </div>
+        </MotionSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 mb-24">
-          <div className="space-y-6 text-lg text-text-secondary leading-relaxed">
+          <MotionSection delay={0.1} className="space-y-6 text-lg text-text-secondary leading-relaxed">
             <p>
               Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior specializing in scalable backend systems and cloud-native architectures. Expert in building high-performance microservices with Go, designing distributed systems, and optimizing databases for enterprise-scale applications.
             </p>
@@ -40,51 +43,57 @@ export default function About() {
                 </ul>
               </div>
             </div>
-          </div>
+          </MotionSection>
 
-          <div className="space-y-8">
+          <MotionStagger className="space-y-8">
             <div className="grid gap-6">
-              <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
-                <div className="w-12 h-12 bg-primary text-white rounded-lg mb-6 flex items-center justify-center">
-                  <Database size={24} />
+              <MotionItem>
+                <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 bg-primary text-bg-primary rounded-lg mb-6 flex items-center justify-center">
+                    <Database size={24} />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold mb-4">Backend & Infrastructure</h3>
+                  <p className="text-text-secondary mb-6">Building scalable distributed systems with modern cloud infrastructure and data storage solutions.</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Go', 'Node.js', 'Python', 'C++', 'PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'].map(tech => (
+                      <TechTag key={tech}>{tech}</TechTag>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-4">Backend & Infrastructure</h3>
-                <p className="text-text-secondary mb-6">Building scalable distributed systems with modern cloud infrastructure and data storage solutions.</p>
-                <div className="flex flex-wrap gap-2">
-                  {['Go', 'Node.js', 'Python', 'C++', 'PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'].map(tech => (
-                    <TechTag key={tech}>{tech}</TechTag>
-                  ))}
-                </div>
-              </div>
+              </MotionItem>
 
-              <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
-                <div className="w-12 h-12 bg-primary text-white rounded-lg mb-6 flex items-center justify-center">
-                  <Layout size={24} />
+              <MotionItem>
+                <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 bg-primary text-bg-primary rounded-lg mb-6 flex items-center justify-center">
+                    <Layout size={24} />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold mb-4">Frontend Development</h3>
+                  <p className="text-text-secondary mb-6">Creating responsive, user-friendly interfaces with modern frameworks and design principles.</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['React', 'Next.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Tailwind'].map(tech => (
+                      <TechTag key={tech}>{tech}</TechTag>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-4">Frontend Development</h3>
-                <p className="text-text-secondary mb-6">Creating responsive, user-friendly interfaces with modern frameworks and design principles.</p>
-                <div className="flex flex-wrap gap-2">
-                  {['React', 'Next.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Tailwind'].map(tech => (
-                    <TechTag key={tech}>{tech}</TechTag>
-                  ))}
-                </div>
-              </div>
+              </MotionItem>
               
-               <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
-                <div className="w-12 h-12 bg-primary text-white rounded-lg mb-6 flex items-center justify-center">
-                  <Box size={24} />
+              {/* <MotionItem>
+                <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 bg-primary text-bg-primary rounded-lg mb-6 flex items-center justify-center">
+                    <Box size={24} />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold mb-4">AI & Machine Learning</h3>
+                   <p className="text-text-secondary mb-6">Implementing intelligent solutions with cutting-edge ML frameworks.</p>
+                  <div className="flex flex-wrap gap-2">
+                     <TechTag>Machine Learning</TechTag>
+                  </div>
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-4">AI & Machine Learning</h3>
-                 <p className="text-text-secondary mb-6">Implementing intelligent solutions with cutting-edge ML frameworks.</p>
-                <div className="flex flex-wrap gap-2">
-                   <TechTag>Machine Learning</TechTag>
-                </div>
-              </div>
-
+              </MotionItem> */}
             </div>
-          </div>
+          </MotionStagger>
         </div>
       </div>
     </section>
   );
 }
+

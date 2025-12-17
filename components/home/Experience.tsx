@@ -1,23 +1,26 @@
+"use client";
+
 import TechTag from '../shared/TechTag';
 import { experienceData } from '@/data/experience';
+import { MotionSection, MotionStagger, MotionItem } from '../shared/Motion';
 
 export default function Experience() {
   return (
     <section id="experience" className="py-24 md:py-32">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <MotionSection className="text-center mb-16">
           <div className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4">
              Experience
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
             Professional Journey
           </h2>
-        </div>
+        </MotionSection>
 
         <div className="max-w-4xl mx-auto">
-          <div className="relative pl-8 md:pl-12 border-l-2 border-border-primary space-y-12">
+          <MotionStagger className="relative pl-8 md:pl-12 border-l-2 border-border-primary space-y-12">
             {experienceData.map((item) => (
-              <div key={item.id} className="relative">
+              <MotionItem key={item.id} className="relative">
                 {/* Timeline dot */}
                 <div className="absolute -left-[43px] md:-left-[59px] top-2 w-3 h-3 bg-primary rounded-full border-2 border-bg-primary ring-4 ring-bg-primary"></div>
 
@@ -56,11 +59,12 @@ export default function Experience() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </MotionItem>
             ))}
-          </div>
+          </MotionStagger>
         </div>
       </div>
     </section>
   );
 }
+
