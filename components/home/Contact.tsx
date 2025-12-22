@@ -38,7 +38,7 @@ export default function Contact() {
                     </svg>
                 </div>
                 <div>
-                  <a href="https://linkedin.com/in/aashishkhatri" target="_blank" className="hover:text-primary transition-colors block">
+                  <a href="https://www.linkedin.com/in/aashish-khatri-375506172/" target="_blank" className="hover:text-primary transition-colors block">
                     <div className="font-bold text-text-primary text-lg">LinkedIn</div>
                     <div className="text-text-secondary">linkedin.com/in/aashishkhatri</div>
                     <div className="font-mono text-xs text-text-muted mt-1">Professional networking</div>
