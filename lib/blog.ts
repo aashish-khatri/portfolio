@@ -5,7 +5,7 @@ import matter from 'gray-matter';
 const blogsDirectory = path.join(process.cwd(), 'content/blogs');
 
 // Average reading speed (words per minute)
-const WORDS_PER_MINUTE = 200;
+const WORDS_PER_MINUTE = 150;
 
 export interface BlogPost {
     slug: string;
