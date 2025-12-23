@@ -26,7 +26,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const post = getBlogPost(slug);
   const relatedPosts = getRelatedPosts(slug, 3);
-  const siteUrl = 'https://aashishkhatri.dev';
+  const siteUrl = 'https://aashish-khatri.vercel.app';
 
   const formattedDate = () => {
       try {
