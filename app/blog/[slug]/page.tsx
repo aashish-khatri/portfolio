@@ -74,7 +74,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 prose-pre:bg-bg-tertiary prose-pre:text-text-secondary prose-pre:rounded-lg
                 prose-th:text-text-primary prose-th:font-semibold prose-td:text-text-secondary
                 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-bg-secondary prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-text-secondary
-                [&_.katex-display]:my-8 [&_.katex-display]:overflow-x-auto [&_.katex]:text-text-primary
+                [&_.katex-display]:my-8 [&_.katex-display]:py-4 [&_.katex-display]:overflow-x-auto [&_.katex]:text-text-primary
             ">
                 <MDXRemote source={post.content} options={options} />
             </div>
