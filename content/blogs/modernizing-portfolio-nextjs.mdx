@@ -1,0 +1,243 @@
+---
+title: 'Architecting a Developer Portfolio: Inside the Custom MDX Engine'
+date: '2024-12-23'
+description: 'A technical deep-dive into the frontend architecture'
+tags: ['Next.js', 'Architecture', 'MDX', 'Frontend']
+---
+
+When rebuilding my portfolio, I had two choices: use a headless CMS or build something custom. As a developer, I chose the latter. I wanted full control over the rendering pipeline, zero external dependencies for content fetching, and the ability to treat my blog posts as code.
+
+This article breaks down the **frontend architecture**, the **custom blog engine**, and the **automated discovery systems** that power this website.
+
+## Frontend Architecture
+
+We leveraged the **Next.js App Router** to create a domain-driven structure. This keeps our concerns separated and makes the codebase easy to navigate.
+
+### Directory Structure
+
+Instead of grouping files by type (controllers/views), we group them by **feature**. This is often called "screaming architecture" because the folder names tell you exactly what the application does.
+
+```text
+src/
+├── app/                 # App Router (Routes)
+│   ├── blog/            # Blog feature routes
+│   │   ├── [slug]/      # Individual post page
+│   │   └── page.tsx     # Blog index (listing)
+│   ├── layout.tsx       # Root layout (Fonts, SEO, Providers)
+│   └── page.tsx         # Landing page
+├── components/          # React Components
+│   ├── blog/            # Blog-specific UI (BlogCard, BlogList)
+│   ├── home/            # Homepage sections
+│   └── shared/          # Reusable tokens (Button, Navbar)
+├── lib/                 # Business logic & Utilities
+│   └── blog.ts          # The core blog engine logic
+└── content/             # The Database (Flat files)
+    └── blogs/           # MDX source files
+```
+
+### The Design System
+
+We use **Tailwind CSS** for formatting and **CSS Variables** for theming. This allows us to define semantic color names (like `bg-primary`, `text-muted`) that can easily support dark mode switches or theme changes in the future without refactoring every component.
+
+```css
+/* globals.css */
+:root {
+  --bg-primary: #ffffff;
+  --text-primary: #1a1a1a;
+  /* ... */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0a0a0a;
+    --text-primary: #ededed;
+  }
+}
+```
+
+## The Blog Engine
+
+The core requirement was to write posts in **MDX** (Markdown + JSX). This allows us to embed interactive React components directly inside technical articles, which is impossible with standard markdown.
+
+### The Stack
+
+- **next-mdx-remote**: Compiles MDX on the server.
+- **gray-matter**: Parses frontmatter (metadata like title, tags).
+- **rehype/remark plugins**: Handles syntax highlighting, math equations, and GFM support.
+
+### The Content Pipeline
+
+The engine lives in `lib/blog.ts`. It acts as our "database driver", but instead of querying SQL, it reads the file system.
+
+Here is the logic for fetching all posts. Notice how we calculate reading time on the fly:
+
+```typescript
+// lib/blog.ts
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+// ... type definitions ...
+
+export function getBlogPosts(): BlogPostMeta[] {
+    // 1. Read the content directory
+    const fileNames = fs.readdirSync(blogsDirectory);
+
+    const allPostsData = fileNames.map((fileName) => {
+        // 2. Read file content
+        const fullPath = path.join(blogsDirectory, fileName);
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        
+        // 3. Parse frontmatter
+        const { data, content } = matter(fileContents);
+
+        // 4. Transform to DTO
+        return {
+            slug: fileName.replace(/\.mdx$/, ''),
+            title: data.title,
+            date: data.date,
+            description: data.description,
+            tags: data.tags || [],
+            readingTime: calculateReadingTime(content), // Custom helper
+        };
+    });
+
+    // 5. Sort by date (Newest first)
+    return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+```
+
+### Static Site Generation (SSG)
+
+Because our efficient file-system reads happen at **build time**, the production site is blazing fast. We use `generateStaticParams` to tell Next.js which pages to pre-render.
+
+```tsx
+// app/blog/[slug]/page.tsx
+export async function generateStaticParams() {
+  const posts = getBlogPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+```
+
+This means every blog post is pre-compiled into HTML. No database hits, no server-side computation on request. Just pure static speed.
+
+## Type-Safe Data Layer
+
+Not everything is a blog post. For sections like **Projects** or **Work Experience**, needing a full CMS or Markdown files is overkill. However, hardcoding JSX is not scalable.
+
+We use a pattern I call **"Data as Code"**. We define TypeScript interfaces for our entities and then export typed arrays of data.
+
+```typescript
+// data/projects.ts
+export interface ProjectItem {
+    id: string;
+    title: string;
+    category: string;
+    techStack: string[];
+    featured: boolean;
+    // ...
+}
+
+export const projectsData: ProjectItem[] = [
+    {
+        id: 'grpc-graphql-platform',
+        title: 'gRPC-GraphQL Microservices Platform',
+        category: 'Microservices Architecture',
+        techStack: ['Go', 'gRPC', 'GraphQL', 'Docker'],
+        featured: true
+    },
+    // ...
+];
+```
+
+This gives us:
+1.  **Type Safety**: You can't typo a field name or miss a required property.
+2.  **Centralized Management**: Editing a project is just a one-line change in a single file, not hunting through React components.
+3.  **Flexibility**: We can `filter()`, `map()`, or `sort()` this array in our UI components just like an API response.
+
+```tsx
+// usage in components
+const featuredProjects = projectsData.filter(p => p.featured);
+```
+
+## Automated Discovery (SEO & RSS)
+
+A portfolio is useless if no one finds it. We automate SEO and discovery using Next.js Metadata routes.
+
+### Dynamic Sitemap
+
+Instead of manually maintaining a `sitemap.xml`, we generate it programmatically based on our blog posts.
+
+```typescript
+// app/sitemap.ts
+import { getBlogPosts } from '@/lib/blog';
+
+export default function sitemap() {
+    const posts = getBlogPosts();
+    const blogUrls = posts.map((post) => ({
+        url: `https://aashishkhatri.dev/blog/${post.slug}`,
+        lastModified: new Date(post.date),
+    }));
+
+    return [
+        { url: 'https://aashishkhatri.dev', priority: 1 },
+        ...blogUrls,
+    ];
+}
+```
+
+### Automatic RSS Feed
+
+We also serve an `rss.xml` for readers who prefer aggregators. This is a simple route handler that outputs XML.
+
+```typescript
+// app/rss.xml/route.ts
+export async function GET() {
+    const posts = getBlogPosts();
+    const feed = `<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="2.0">
+      <channel>
+        <title>Aashish Khatri - Engineering Blog</title>
+        ${posts.map(post => `
+          <item>
+            <title><![CDATA[${post.title}]]></title>
+            <link>...</link>
+          </item>`).join('')}
+      </channel>
+    </rss>`;
+    
+    return new Response(feed, {
+        headers: { 'Content-Type': 'application/rss+xml' },
+    });
+}
+```
+
+## Client-Side Interactivity
+
+Use the platform, but don't lose the UX. While the blog posts are static, the listing page uses client-side React for instant filtering.
+
+```tsx
+// components/blog/BlogList.tsx
+"use client";
+
+export default function BlogList({ posts }) {
+  // Memoized filtering logic
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => /* logic */);
+  }, [posts, filter, search]);
+
+  return <div>{/* UI */}</div>;
+}
+```
+
+## Conclusion
+
+This architecture represents a "sweet spot" for developer portfolios:
+1.  **Low Complexity**: No database to manage.
+2.  **High Performance**: Everything is static.
+3.  **Great DX**: Type-safe data and MDX content.
+4.  **Discoverable**: Automated SEO and RSS.
+
+It's a system designed to get out of your way and let you focus on what matters: **building and writing**.

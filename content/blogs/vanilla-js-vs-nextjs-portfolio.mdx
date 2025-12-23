@@ -1,0 +1,242 @@
+---
+title: 'Architecting a Developer Portfolio: Vanilla JS vs Next.js'
+date: '2024-12-23'
+description: 'A detailed comparison of building a modern developer portfolio with custom MDX engine in Next.js versus legacy vanilla HTML/CSS/JS approach'
+tags: ['Next.js', 'Architecture', 'MDX', 'Frontend', 'Vanilla JS', 'Comparison']
+---
+
+
+## Architecture Overview
+
+### Vanilla JS Architecture
+
+A traditional portfolio in vanilla JS usually looks like this:
+
+```text
+root/
+├── index.html          # Landing page
+├── blog.html           # Blog listing
+├── post.html           # Single post template (or many static HTML files)
+├── css/
+│   └── styles.css
+└── js/
+    └── main.js
+```
+
+- **Routing** is handled by the server or by separate HTML files per page. [web:10]  
+- **State and UI** logic live in ad‑hoc script files and inline handlers, which get harder to manage as features grow. [web:6][web:10]  
+
+This works for a basic, mostly static site but becomes repetitive when you add more pages, variants, and interactions. [web:10]  
+
+### Next.js + MDX Architecture
+
+The redesigned portfolio uses **Next.js App Router** with a domain‑driven folder structure and a custom MDX engine:
+
+```text
+src/
+├── app/
+│   ├── blog/
+│   │   ├── [slug]/      # Individual post page
+│   │   └── page.tsx     # Blog index (listing)
+│   ├── layout.tsx       # Root layout (Fonts, SEO, Providers)
+│   └── page.tsx         # Landing page
+├── components/
+│   ├── blog/            # Blog-specific UI
+│   ├── home/            # Homepage sections
+│   └── shared/          # Reusable tokens (Button, Navbar)
+├── lib/
+│   └── blog.ts          # Blog engine logic
+└── content/
+    └── blogs/           # MDX source files
+```
+
+- **File‑system routing**: routes come from folders, no manual router code. [web:1][web:4]  
+- **React components** provide composable UI, and the app router supports server components for efficient rendering. [web:2][web:4]  
+
+This "screaming architecture" makes the domain (blog, home, shared) obvious from the folder tree and scales naturally as features are added. [web:4]  
+
+---
+
+## Blog Engine: Templates vs MDX
+
+### Legacy Vanilla Blog
+
+In a vanilla setup, there are two common patterns:
+
+1. **One HTML file per post**  
+   - `blog/post-1.html`, `blog/post-2.html`, etc. manually authored. [web:9]  
+   - Content changes require editing HTML, which mixes markup, content, and styling.  
+
+2. **Single template + JSON data**  
+   - `post.html` plus a `posts.json` that main.js loads and injects into the DOM. [web:6][web:9]  
+   - You write imperative DOM code to render posts, handle routing logic (e.g., query params), and wire events.  
+
+Both approaches lack a first‑class way to treat content as code with React components inside the article body.
+
+### Next.js Custom MDX Engine
+
+The Next.js portfolio treats **MDX as the source of truth** and uses a custom blog engine in `lib/blog.ts`:
+
+- **Stack**  
+  - `next-mdx-remote` or the App Router MDX support to compile MDX on the server. [web:1][web:2]  
+  - `gray-matter` for frontmatter (title, tags, date). [web:1][web:4]  
+  - `remark/rehype` plugins for syntax highlighting, GFM, and math. [web:4]  
+
+- **Content pipeline** (similar to your original snippet)  
+  - Read `.mdx` files from `content/blogs/`.  
+  - Parse frontmatter to TypeScript types.  
+  - Compute reading time and return typed DTOs to the UI. [web:1][web:4]  
+
+This lets every article embed interactive React components directly in the markdown, something that is awkward and repetitive with vanilla JS and static HTML. [web:2][web:4]  
+
+---
+
+## Rendering, Performance, and Deployment
+
+### Rendering in Vanilla JS
+
+With vanilla HTML/JS:
+
+- Pages are **static files**; performance is good by default, but anything dynamic (like filtering posts client‑side) is manual DOM work. [web:9][web:10]  
+- There is no built‑in notion of **SSG or SSR**; you either prebuild HTML manually or introduce a separate build system. [web:10]  
+
+Deployment is simple—upload files to any static host—but performance optimizations like code splitting, image optimization, and caching strategies are all on you. [web:7][web:10]  
+
+### Rendering in Next.js
+
+The Next.js portfolio uses **Static Site Generation**:
+
+- `generateStaticParams` enumerates all blog slugs so each post is pre‑rendered to HTML at build time. [web:1][web:4]  
+- The result is a static, CDN‑friendly site with **zero runtime database or filesystem hits** in production. [web:1][web:8]  
+
+Next.js also provides:
+
+- Built‑in **code splitting**, automatic bundling, and route‑level optimization. [web:7][web:10]  
+- Optional SSR and streaming for interactive or data‑driven sections if needed later. [web:2][web:7]  
+
+This matches the performance of a hand‑rolled static site while giving much stronger ergonomics for complex layouts and content flows. [web:7][web:8]  
+
+---
+
+## Data Layer and Type Safety
+
+### Data in Vanilla JS
+
+In vanilla JS, structured data (projects, experience, skills) usually lives in:
+
+- Inline JSON objects in script files.  
+- Hardcoded HTML chunks copied across pages. [web:6][web:10]  
+
+Nothing enforces shape consistency:
+
+- Typos in field names or missing keys only surface at runtime.  
+- Refactors mean **find‑and‑replace** across HTML/JS, which is error‑prone once the site grows. [web:10]  
+
+### Data as Code in Next.js
+
+The Next.js architecture uses **TypeScript + "Data as Code"**:
+
+```typescript
+export interface ProjectItem {
+  id: string;
+  title: string;
+  category: string;
+  techStack: string[];
+  featured: boolean;
+}
+
+export const projectsData: ProjectItem[] = [
+  {
+    id: 'grpc-graphql-platform',
+    title: 'gRPC-GraphQL Microservices Platform',
+    category: 'Microservices Architecture',
+    techStack: ['Go', 'gRPC', 'GraphQL', 'Docker'],
+    featured: true,
+  },
+];
+```
+
+- TypeScript enforces shape and required properties at compile time. [web:7]  
+- React components consume these arrays just like API responses, using `filter`, `map`, and `sort` for UI variants. [web:1][web:4]  
+
+This pattern is possible in vanilla JS, but without TS and a component model, the benefits are smaller and harder to maintain as the codebase evolves. [web:7][web:10]  
+
+---
+
+## SEO, Discovery, and Automation
+
+### SEO with Vanilla JS
+
+A legacy setup often relies on:
+
+- Manually maintained `sitemap.xml` and optional `rss.xml`.  
+- Per‑page `<head>` tags edited directly in HTML. [web:9][web:10]  
+
+Any new blog post requires updating:
+
+- The HTML for the post.  
+- Internal links.  
+- Sitemap and RSS feeds, if they exist at all. [web:9]  
+
+This is manageable for a handful of pages but does not scale when you publish frequently.
+
+### SEO with Next.js
+
+The Next.js portfolio automates discovery via framework primitives:
+
+- **Dynamic sitemap**  
+  - A `sitemap.ts` route reads all posts and returns structured URLs and lastModified timestamps. [web:1][web:8]  
+
+- **Automatic RSS**  
+  - An `app/rss.xml/route.ts` handler builds an RSS feed from the same MDX source used for pages. [web:1][web:3]  
+
+- **Metadata API**  
+  - Next.js App Router supports metadata generation per route for titles, descriptions, and Open Graph tags. [web:2][web:8]  
+
+This centralizes SEO in code, guarantees consistency across pages, and eliminates manual XML editing as the site grows. [web:2][web:8]  
+
+---
+
+## Client-Side Interactivity and UX
+
+### Interactivity in Vanilla JS
+
+In vanilla JS, interactions such as filtering posts or animating sections require:
+
+- Writing event listeners by hand.  
+- Imperative DOM manipulation (`document.querySelector`, `innerHTML`, etc.). [web:6]  
+
+This is perfectly viable but becomes verbose and harder to reason about when interactions depend on shared state across multiple components. [web:6][web:10]  
+
+### Interactivity in Next.js
+
+The portfolio keeps individual posts static while enabling **rich client‑side UX** in listing and navigation:
+
+- Client components like `BlogList` use React state, `useMemo`, and hooks for instant filtering and search. [web:1][web:4]  
+- MDX posts themselves can host interactive React components (charts, code playgrounds, demos) inline. [web:2][web:4]  
+
+Next.js makes it easy to selectively opt into client interactivity where it improves UX while keeping the bulk of the content statically rendered. [web:2][web:8]  
+
+---
+
+## Side‑by‑Side Summary
+
+| Dimension          | Legacy Vanilla JS                                             | Next.js + MDX Portfolio                                                      |
+|-------------------|---------------------------------------------------------------|------------------------------------------------------------------------------|
+| Architecture      | Flat HTML/JS; ad‑hoc structure; manual routing [web:6][web:10] | App Router, feature folders, file‑based routes [web:1][web:4]               |
+| Content Model     | Static HTML or JSON + DOM manipulation [web:6][web:9]         | MDX files with frontmatter and React components [web:1][web:2]             |
+| Rendering         | Static files; no built‑in SSG/SSR [web:9][web:10]             | First‑class SSG, SSR, streaming, route‑level optimization [web:1][web:7]   |
+| Data Layer        | Untyped objects or inline markup [web:6][web:10]              | TypeScript "Data as Code" with strict interfaces [web:7]                   |
+| SEO & Discovery   | Manual HTML `<head>`, sitemap, RSS if any [web:9][web:10]     | Metadata API, dynamic sitemap, RSS route powered by the same data [web:1][web:8] |
+| Interactivity     | Imperative DOM; event listeners per feature [web:6]           | Declarative React components and hooks, MDX‑embedded UI [web:2][web:4]     |
+| Scalability       | Hard to scale pages and content variety [web:10]              | Grows naturally with routes, components, and content files [web:7][web:8]  |
+| Developer Experience | Minimal tooling; manual optimization [web:9]              | Hot reload, TS types, React ecosystem, built‑in bundler [web:7][web:10]    |
+
+---
+
+## Why Next.js Wins for This Portfolio
+
+For a single static page, vanilla JS is enough and has the smallest possible footprint. [web:9][web:10]  
+For a **developer portfolio with a technical blog, MDX content, SEO automation, and type‑safe project data**, Next.js with a custom MDX engine hits a better balance of low runtime complexity, high performance, and excellent developer experience. [web:1][web:4][web:7]  
+
+It turns the portfolio itself into a demonstration of production‑grade frontend architecture instead of just a static brochure.
