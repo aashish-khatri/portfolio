@@ -10,10 +10,16 @@ import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import Link from 'next/link';
+import CodeBlock from "@/components/blog/CodeBlock";
 
 // Import styles
 import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.min.css';
+
+// MDX custom components
+const mdxComponents = {
+  pre: CodeBlock,
+};
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
@@ -76,7 +82,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-bg-secondary prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-text-secondary
                 [&_.katex-display]:my-8 [&_.katex-display]:py-4 [&_.katex-display]:overflow-x-auto [&_.katex]:text-text-primary
             ">
-                <MDXRemote source={post.content} options={options} />
+                <MDXRemote source={post.content} options={options} components={mdxComponents} />
             </div>
 
             {/* Share Section */}
