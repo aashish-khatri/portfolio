@@ -1,10 +1,10 @@
 import { getBlogPosts } from '@/lib/blog';
 
 export async function GET() {
-    const posts = getBlogPosts();
-    const siteUrl = 'https://aashishkhatri.dev';
+  const posts = getBlogPosts();
+  const siteUrl = 'https://aashish-khatri.vercel.app';
 
-    const feed = `<?xml version="1.0" encoding="UTF-8"?>
+  const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Aashish Khatri - Engineering Blog</title>
@@ -25,10 +25,10 @@ export async function GET() {
   </channel>
 </rss>`;
 
-    return new Response(feed, {
-        headers: {
-            'Content-Type': 'application/rss+xml; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
-        },
-    });
+  return new Response(feed, {
+    headers: {
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
+    },
+  });
 }

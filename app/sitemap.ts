@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getBlogPosts } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://aashishkhatri.dev';
+    const baseUrl = 'https://aashish-khatri.vercel.app';
 
     // Get all blog posts
     const posts = getBlogPosts();

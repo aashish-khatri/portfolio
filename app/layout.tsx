@@ -21,12 +21,12 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://aashishkhatri.dev";
+const siteUrl = "https://aashish-khatri.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Aashish Khatri | Software Engineer & Full-Stack Developer",
+    default: "Aashish Khatri | Software Engineer",
     template: "%s | Aashish Khatri",
   },
   description: "Specialized in Go, React, and cloud-native microservices. Building scalable solutions with modern technologies and clean architecture.",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Aashish Khatri - Portfolio",
-    title: "Aashish Khatri | Software Engineer & Full-Stack Developer",
+    title: "Aashish Khatri | Software Engineer",
     description: "Specialized in Go, React, and cloud-native microservices. Building scalable solutions with modern technologies.",
     images: [
       {
