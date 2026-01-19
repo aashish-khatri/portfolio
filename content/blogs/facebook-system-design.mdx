@@ -1,0 +1,314 @@
+---
+title: 'System Design: Building Facebook from Scratch'
+date: '2026-01-13'
+description: 'A comprehensive engineering blueprint for building Facebook at scale — covering social graph, news feed, messaging, media storage, ads, and the infrastructure serving 3 billion users.'
+tags: ['System Design', 'Distributed Systems', 'Architecture', 'Big Data']
+---
+
+This is the complete system design for building Facebook — not a theoretical exercise, but an engineering blueprint based on publicly documented architecture from Meta engineering.
+
+---
+
+## Scale We're Designing For
+
+| Metric | Value |
+|--------|-------|
+| Daily Active Users | ~2 billion |
+| Posts created/day | ~500 million |
+| Photos uploaded/day | ~350 million |
+| Messages sent/day | ~100 billion |
+| Friend connections | ~400 billion edges |
+| Peak requests/second | ~10 million |
+
+---
+
+## High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                              EDGE LAYER                              │
+│  CDN  │  DNS  │  WAF  │  Global Load Balancers                      │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+┌─────────────────────────────────────────────────────────────────────┐
+│                           API GATEWAY                                │
+│  GraphQL API  │  WebSocket Gateway  │  Rate Limiter                 │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+┌─────────────────────────────────────────────────────────────────────┐
+│                      MICROSERVICES LAYER                             │
+│  User  │  Feed  │  Graph  │  Media  │  Messaging  │  Ads  │ Search │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+┌─────────────────────────────────────────────────────────────────────┐
+│                          DATA LAYER                                  │
+│  MySQL/Vitess │ TAO (Graph) │ Memcached │ Haystack │ Kafka │ Hive  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 1. Social Graph Service (TAO)
+
+### The Problem
+
+400+ billion friend connections. Queries like "mutual friends" and "friends of friends" touch millions of edges.
+
+### Data Model
+
+```
+Object: { id, type, data, version }
+Association: { id1, type, id2, timestamp, data }
+```
+
+### Architecture
+
+**Three-tier caching:**
+- Leader Cache: handles writes, owns invalidation
+- Follower Caches: read replicas in each region
+- MySQL: persistent storage, sharded by object_id
+
+### Key Metrics
+- 99.8% cache hit rate
+- under 1ms read latency (p50)
+- 1B+ queries/second
+
+---
+
+## 2. News Feed System
+
+### The Challenge
+
+Show each user the ~50 most relevant posts from 1000s of candidates.
+
+### Hybrid Push/Pull Model
+
+**Push (99% of users):** When you post, fan-out to friends' feed queues.
+
+**Pull (celebrities):** For users with millions of followers, fetch content at read time to avoid write amplification.
+
+### Ranking Pipeline
+
+```
+Stage 1: Candidate Generation (~10,000 posts)
+    │ Lightweight filter: recency, eligibility
+    ▼
+Stage 2: First-Pass Ranking (~1,000 posts)
+    │ Logistic regression: affinity, post type
+    ▼
+Stage 3: Deep Ranking (~500 posts)
+    │ Neural network: P(like), P(comment), P(share)
+    ▼
+Stage 4: Final Reranking (~50 posts)
+    │ Diversity, ads placement, integrity checks
+    ▼
+    Feed Response
+```
+
+### Storage
+- Cassandra for per-user feed queues
+- TTL: 7 days (older posts pulled from graph)
+
+---
+
+## 3. Messaging Infrastructure
+
+### Scale
+- 100+ billion messages/day
+- under 100ms delivery latency globally
+
+### Architecture
+
+```
+Clients ──▶ MQTT/WebSocket Gateway ──▶ Message Router
+                                            │
+            ┌───────────────┬───────────────┤
+            ▼               ▼               ▼
+      Message Store    Presence        Push Notif
+        (HBase)      (Redis)        (APNS/FCM)
+```
+
+### Message Flow
+1. Alice sends message
+2. Gateway routes to Bob's connection (if online)
+3. Persist to HBase (conversation_id as row key)
+4. If Bob offline: queue + push notification
+5. Sync across all devices
+
+### End-to-End Encryption
+- Signal Protocol for Secret Conversations
+- Key exchange: X3DH
+- Message encryption: Double Ratchet
+
+---
+
+## 4. Media Storage (Haystack)
+
+### The Problem
+Traditional filesystems: 1 file = 1 metadata lookup = high latency at scale.
+
+### Solution
+Pack millions of photos into large "volumes":
+
+```
+Volume (100GB file):
+┌──────┬──────┬──────┬──────┬──────────────────┐
+│Photo1│Photo2│Photo3│Photo4│ ... millions ... │
+│ 40KB │ 80KB │ 25KB │ 60KB │                  │
+└──────┴──────┴──────┴──────┴──────────────────┘
+
+In-memory index: photo_id → (volume, offset, size)
+Result: Single disk read per photo, no metadata overhead
+```
+
+### CDN Hierarchy
+- Layer 1: 200+ Edge POPs (80-85% hit rate)
+- Layer 2: Regional POPs (10-12%)
+- Layer 3: Origin (3-5%)
+
+---
+
+## 5. Search Infrastructure (Unicorn)
+
+### Social-Aware Ranking
+
+Unlike Google, Facebook search is personalized:
+
+```
+Ranking = TextRelevance × SocialDistance × InteractionHistory
+                        × Popularity × Recency
+```
+
+Friends rank higher. People you interact with rank higher.
+
+### Real-Time Indexing
+- Kafka stream of new content
+- Index updates within seconds
+
+---
+
+## 6. Ads Platform
+
+### The Auction
+
+```
+EffectiveCPM = Bid × P(Click) × P(Conversion) × QualityScore
+```
+
+Highest eCPM wins. Second-price auction determines cost.
+
+### Targeting Taxonomy
+- Demographics (age, location, language)
+- Interests (hierarchical: Sports → Football → NFL)
+- Behaviors (purchase patterns, device usage)
+- Custom Audiences (uploaded customer lists, website visitors)
+
+### Serving Pipeline
+```
+Feed Request ──▶ Candidate Selection (~1000 ads)
+                        │
+                ┌───────┴───────┐
+                ▼               ▼
+         Prediction         Auction
+         Models           (Rank by eCPM)
+                │               │
+                └───────┬───────┘
+                        ▼
+                 Delivery & Pacing
+                 (Budget smoothing)
+```
+
+---
+
+## 7. Real-Time Infrastructure
+
+### WebSocket Architecture
+- 10M+ concurrent connections per server
+- MQTT-like protocol over WebSocket
+- Connection registry in Redis cluster
+
+### Presence System
+- States: ACTIVE, IDLE, OFFLINE
+- Redis key: `presence:{user_id}`
+- TTL: 60 seconds (auto-expire to offline)
+- Only visible to friends
+
+---
+
+## 8. Data Infrastructure
+
+### Three Layers
+
+**Real-time (seconds):** Kafka → Flink → Dashboards
+
+**Batch (hours):** Scribe → HDFS → Hive/Spark → Presto
+
+**ML Platform:** Feature Store → PyTorch Training → Model Serving (under 10ms)
+
+---
+
+## 9. Reliability Engineering
+
+### Deployment Strategy
+
+```
+Code ──▶ Build ──▶ Test ──▶ Canary (0.1%)
+                              │
+                     ┌────────┴────────┐
+                     ▼                 ▼
+              Staged Rollout     Auto-Rollback
+              (1%→5%→25%→100%)   (on error spike)
+```
+
+### Reliability Patterns
+| Pattern | Purpose |
+|---------|---------|
+| Circuit Breaker | Prevent cascade failures |
+| Bulkhead | Isolate thread pools |
+| Retry | Exponential backoff |
+| Load Shedding | Priority-based rejection |
+
+### Availability Target
+- 99.99% uptime (52 minutes downtime/year)
+- RPO: under 1 minute
+- RTO: under 5 minutes
+
+---
+
+## Technology Summary
+
+| Component | Technology |
+|-----------|------------|
+| API Layer | GraphQL |
+| Social Graph | TAO (custom) |
+| Feed Storage | Cassandra |
+| Message Storage | HBase |
+| Photo Storage | Haystack (custom) |
+| Caching | Memcached + TAO Cache |
+| Streaming | Kafka |
+| Search | Unicorn (custom) |
+| ML Training | PyTorch |
+| Batch Processing | Spark/Hive |
+
+---
+
+## Key Architectural Decisions
+
+1. **Build custom for core systems**: TAO, Haystack, Unicorn
+2. **Shard by user_id**: Consistent hashing for most data
+3. **Aggressive caching**: 99.8% cache hit rate
+4. **Eventual consistency**: Accept delays for availability
+5. **Cell architecture**: Isolated failure domains
+
+---
+
+## What It Takes
+
+| Phase | Timeline | Engineering |
+|-------|----------|-------------|
+| MVP | 12-18 months | 20-50 engineers |
+| 10M users | +12 months | 100+ engineers |
+| 100M users | +24 months | 500+ engineers |
+| 1B users | +48 months | 1000s of engineers |
+
+Building Facebook isn't about any single breakthrough — it's thousands of engineering decisions compounding over a decade.

@@ -1,0 +1,401 @@
+---
+title: 'Photon: How Databricks Built a Vectorized Query Engine That Rewrites the Rules'
+date: '2026-01-13'
+description: 'A first-principles deep dive into Databricks Photon — the SIGMOD 2022 best industry paper. From row-at-a-time execution to vectorized batches, from JVM overhead to native C++, from CPU cache misses to SIMD acceleration.'
+tags: ['System Design', 'Databases', 'Query Engines', 'Performance']
+---
+
+In June 2022, Databricks published a paper at SIGMOD that won the Best Industry Paper award: *Photon: A Fast Query Engine for Lakehouse Systems*. The paper described something that sounds almost contradictory: a query engine that is both **compatible with Apache Spark** and **3-10x faster**.
+
+How do you make something dramatically faster while keeping it compatible? The answer lies in understanding why Spark was slow in the first place — and then attacking those problems at the hardware level.
+
+This is the story of Photon, told from first principles.
+
+---
+
+## The Problem: Why Spark Hits a Wall
+
+Apache Spark revolutionized big data. It replaced MapReduce's disk-bound shuffle with in-memory processing. It introduced DataFrames and Catalyst, a sophisticated query optimizer. It scaled to petabytes.
+
+But as data infrastructure matured, a new bottleneck emerged: **the CPU**.
+
+### The CPU-Bound Era
+
+In the early days of big data, systems were **I/O-bound**. Reading from disk or network was the bottleneck. You could afford to waste CPU cycles because you were waiting on data anyway.
+
+That era is ending. Modern infrastructure has:
+
+- **NVMe SSDs**: 3-6 GB/s sequential read
+- **100 Gbps networks**: data moves faster than ever
+- **Cloud object storage**: near-infinite bandwidth if you parallelize
+- **Columnar formats**: Parquet, Delta Lake compress and skip efficiently
+
+The result: data arrives faster than CPUs can process it. The game has shifted from "how do I get data faster" to "how do I process data faster."
+
+### Three Reasons Spark's CPU Usage Is Inefficient
+
+**1. Row-at-a-Time Execution**
+
+Traditional Spark (the Volcano model) processes one row at a time:
+
+```
+for each row in input:
+    apply filter
+    apply projection
+    emit to next operator
+```
+
+This sounds reasonable, but it has a hidden cost: **function call overhead**. Each row traverses the operator tree, and each operator is a virtual function call. At billions of rows, those nanoseconds compound into minutes.
+
+**2. JVM Overhead**
+
+Spark runs on the JVM. That means:
+
+- **Garbage collection pauses**: Stop-the-world GC events freeze execution
+- **Object overhead**: Each Java object carries 12-16 bytes of header
+- **JIT warmup**: Code isn't fully optimized until it's been run many times
+- **Boxed primitives**: `Integer` instead of `int` wastes memory and cache
+
+**3. Cache Unfriendliness**
+
+Modern CPUs have a hierarchy of caches (L1, L2, L3) that are orders of magnitude faster than RAM. Code that accesses memory sequentially benefits from cache prefetching. Code that jumps around defeats it.
+
+Row-at-a-time processing is cache-unfriendly. Processing row 1's `age` field, then row 1's `name` field, then row 2's `age` field causes the CPU to constantly fetch new cache lines.
+
+---
+
+## The Solution: Vectorized Execution
+
+Photon's core insight is **vectorized execution**: instead of processing one row at a time, process batches of column values at once.
+
+### The Mental Model
+
+Think of it like this:
+
+**Row-at-a-time (Volcano)**:
+```
+for each row:
+    row.age = row.age + 1
+```
+
+**Vectorized**:
+```
+for i in batch:
+    ages[i] = ages[i] + 1
+```
+
+The second version looks almost identical, but the CPU sees something fundamentally different:
+- Data is contiguous in memory (a single array)
+- The loop is trivial to unroll and parallelize
+- SIMD instructions can process 4, 8, or 16 values simultaneously
+
+### What is SIMD?
+
+**SIMD** (Single Instruction, Multiple Data) is a CPU feature that applies one operation to multiple values in parallel. Modern x86 CPUs have registers 256 or 512 bits wide. A single instruction can:
+
+- Add eight 32-bit integers at once (AVX2)
+- Compare sixteen 32-bit values simultaneously (AVX-512)
+- Compute sixteen floating-point operations in one cycle
+
+Row-at-a-time execution cannot use SIMD — the data isn't in the right format. Vectorized execution is *designed* for SIMD.
+
+---
+
+## Photon's Architecture
+
+### The Big Picture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         SPARK DRIVER                                 │
+│   SQL / DataFrame API  --->  Catalyst Optimizer  --->  Query Plan   │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        SPARK EXECUTOR (JVM)                          │
+│   ┌──────────────────────────────────────────────────────────────┐  │
+│   │                      PHOTON (C++)                             │  │
+│   │   - Vectorized operators                                      │  │
+│   │   - Columnar batches                                          │  │
+│   │   - Native memory management                                  │  │
+│   │   - SIMD kernels                                              │  │
+│   └──────────────────────────────────────────────────────────────┘  │
+│              ▲                              │                        │
+│              │ JNI (pointers to off-heap)   │                        │
+│              └──────────────────────────────┘                        │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        DATA SOURCES                                  │
+│   Delta Lake  │  Parquet  │  JSON  │  S3 / ADLS / GCS               │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Photon runs **inside** the Spark executor, but as native C++ code. The JVM and C++ communicate via JNI, passing pointers to off-heap memory rather than copying data.
+
+### Columnar Batch Format
+
+Photon organizes data in **column batches** — Arrow-like structures where each column is stored contiguously:
+
+```
+Column Batch (1024 rows):
+┌─────────────────────────────────────────────────────────────────────┐
+│ Column: user_id                                                      │
+│ ┌───────────────────────────────────────────────────────────────┐   │
+│ │ 101 │ 102 │ 103 │ 104 │ 105 │ ... │ 1124 │                    │   │
+│ └───────────────────────────────────────────────────────────────┘   │
+│ Nulls: [ 0, 0, 0, 0, 0, ..., 0 ]                                     │
+├─────────────────────────────────────────────────────────────────────┤
+│ Column: age                                                          │
+│ ┌───────────────────────────────────────────────────────────────┐   │
+│ │  25 │  32 │  28 │  45 │  19 │ ... │  33  │                    │   │
+│ └───────────────────────────────────────────────────────────────┘   │
+│ Nulls: [ 0, 1, 0, 0, 0, ..., 0 ]  // row 2 is NULL                   │
+├─────────────────────────────────────────────────────────────────────┤
+│ Position List: [ 0, 2, 3, 4, 6, ... ]  // active rows after filter  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Each column has:
+1. **Values buffer**: Contiguous array of the actual data
+2. **Nulls buffer**: Bitmask indicating which values are NULL
+3. **Position list**: Indices of "active" rows (rows that passed filters)
+
+### Why Position Lists?
+
+Traditional vectorized engines materialize intermediate results: after a filter, they physically copy surviving rows into a new batch. This is expensive.
+
+Photon uses **position lists** instead. After `WHERE age greater than 30`:
+
+- Don't copy data
+- Just record which row indices survived: `[2, 4, 7, 11, ...]`
+- Downstream operators use this list to access only relevant values
+
+This avoids memory allocation and copying for every filter — a massive win for complex queries with many predicates.
+
+---
+
+## Photon Kernels: The Performance Core
+
+The heart of Photon is its **kernels** — highly optimized C++ functions that implement operators like `+`, `=`, `LIKE`, etc.
+
+### Specialization at Runtime
+
+Photon kernels are *templates* that specialize based on data characteristics:
+
+```cpp
+// Conceptual structure (simplified)
+template<bool HAS_NULLS, bool HAS_FILTER>
+void add_kernel(int32_t* a, int32_t* b, int32_t* out, 
+                uint8_t* nulls, int32_t* positions, int n) {
+    if constexpr (HAS_FILTER) {
+        for (int i = 0; i < n; i++) {
+            int idx = positions[i];
+            if constexpr (HAS_NULLS) {
+                if (nulls[idx]) { out[idx] = NULL_MARKER; continue; }
+            }
+            out[idx] = a[idx] + b[idx];
+        }
+    } else {
+        // Tight loop - SIMD friendly
+        for (int i = 0; i < n; i++) {
+            out[i] = a[i] + b[i];
+        }
+    }
+}
+```
+
+At runtime, Photon inspects batches and dispatches to the most efficient specialization:
+
+| Data Properties | Kernel Used |
+|-----------------|-------------|
+| No nulls, no filter | Tightest SIMD loop |
+| Has nulls, no filter | Check null mask before op |
+| No nulls, has filter | Use position list |
+| Has nulls, has filter | Check both |
+
+This **adaptive dispatch** means hot paths stay hot, and cold paths don't slow down common cases.
+
+### Hand-Optimized SIMD
+
+For critical operations, Photon uses hand-written SIMD intrinsics. Consider summing a column:
+
+**Scalar version**:
+```cpp
+int64_t sum = 0;
+for (int i = 0; i < n; i++) {
+    sum += values[i];
+}
+```
+
+**AVX2 version** (processes 8 integers at once):
+```cpp
+__m256i vsum = _mm256_setzero_si256();
+for (int i = 0; i < n; i += 8) {
+    __m256i v = _mm256_loadu_si256((__m256i*)&values[i]);
+    vsum = _mm256_add_epi32(vsum, v);
+}
+// Horizontal sum at the end
+```
+
+The SIMD version processes 8x the data per loop iteration, with the same number of instructions.
+
+---
+
+## Integration with Spark: The Hybrid Model
+
+Photon doesn't replace Spark — it accelerates it. This was a critical design decision.
+
+### Why Not Replace Spark Entirely?
+
+Databricks customers have millions of lines of PySpark and Scala code. A new engine that requires rewriting would have zero adoption. The constraint was: **existing code must run faster with no changes**.
+
+### How the Handoff Works
+
+1. **Query Planning**: Catalyst optimizer produces a physical plan
+2. **Photon Detection**: The system identifies plan nodes that Photon can execute
+3. **Boundary Insertion**: Transitions (JVM-to-Photon, Photon-to-JVM) are inserted
+4. **Execution**: 
+   - JVM operators run in Spark
+   - Photon operators run in C++
+   - Data passes via JNI pointers (no copying)
+
+```
+Query: SELECT name, age + 1 FROM users WHERE age greater than 30
+
+Plan:
+┌────────────────────────────────────────────────────────────────┐
+│ Project [name, (age + 1)]   <--- Photon (vectorized add)       │
+├────────────────────────────────────────────────────────────────┤
+│ Filter [age greater than 30]  <--- Photon (vectorized compare) │
+├────────────────────────────────────────────────────────────────┤
+│ Scan (Delta Lake)            <--- Photon (native Parquet read) │
+└────────────────────────────────────────────────────────────────┘
+```
+
+If a query contains an operator Photon doesn't support, Spark handles it. The boundary operators convert data between formats transparently.
+
+### Supported Operations
+
+Photon accelerates the most CPU-intensive operations:
+
+- **Scans**: Native Parquet/Delta readers
+- **Filters**: Predicate evaluation
+- **Projections**: Expression evaluation
+- **Aggregations**: SUM, COUNT, AVG, etc.
+- **Joins**: Hash joins, broadcast joins
+- **Sorting**: Order by operations
+
+---
+
+## Memory Management: Avoiding GC Hell
+
+One of Photon's biggest performance wins comes from **off-heap memory management**.
+
+### The GC Problem
+
+Spark's default engine uses JVM heap memory. Large datasets mean:
+
+- Frequent garbage collection
+- Stop-the-world pauses (sometimes seconds)
+- Unpredictable latency spikes
+
+### Photon's Approach
+
+Photon allocates memory **off-heap** — outside the JVM's control:
+
+1. Memory is allocated via C++ (`malloc` / custom allocators)
+2. Pointers are passed through JNI
+3. C++ code manages lifecycle
+4. Deallocation is deterministic (no GC)
+
+This gives:
+- **No GC pauses** for query data
+- **Predictable memory usage**
+- **Better cache locality** (contiguous allocations)
+
+### Coordinated Spilling
+
+When memory pressure occurs, Photon coordinates with Spark's memory manager:
+
+1. Spark signals memory pressure
+2. Photon spills cold data to disk
+3. Hot data stays in memory
+4. Queries continue without OOM
+
+This integration means Photon inherits Spark's robust memory management without sacrificing performance.
+
+---
+
+## The Results: What 3-10x Actually Looks Like
+
+The SIGMOD paper reported average speedups of **3x**, with some queries reaching **10x or more**.
+
+### Where Does the Speedup Come From?
+
+| Factor | Contribution |
+|--------|--------------|
+| Vectorized execution | 2-4x (batch processing, SIMD) |
+| Native C++ | 1.5-2x (no JVM overhead) |
+| Off-heap memory | 1.2-1.5x (no GC pauses) |
+| Position lists | 1.1-1.3x (less materialization) |
+
+These multiply together. A query that benefits from all factors sees the maximum speedup.
+
+### Worst Case: No Slowdown
+
+Critically, Photon doesn't make things slower. If a query can't benefit from vectorization, it falls back to Spark's engine. The hybrid model ensures there's no performance regression.
+
+---
+
+## Why This Matters: Lessons for Database Engineers
+
+### 1. The Hardware Has Changed; Software Must Follow
+
+The assumptions of 2010s big data (disk-bound, network-bound) no longer hold. Modern systems are CPU-bound. Engines designed for the old world leave performance on the table.
+
+### 2. Compatibility Trumps Purity
+
+A rewrite that requires customer code changes won't get adopted. Photon succeeded because it accelerates existing workloads transparently. The best performance improvement is one users don't have to think about.
+
+### 3. Vectorization Is Not Optional
+
+Every major analytical engine has moved to vectorized execution:
+- DuckDB
+- ClickHouse
+- Velox (Meta)
+- DataFusion (Apache Arrow)
+
+Row-at-a-time processing is a legacy design. For analytical workloads, vectorization is the new baseline.
+
+### 4. SIMD Is Accessible
+
+Hand-written SIMD used to be exotic. Today, with AVX2 nearly universal and compilers getting smarter, there's no excuse not to exploit it for hot paths.
+
+### 5. C++ in a JVM World
+
+You can have the ecosystem benefits of the JVM (Spark compatibility, tooling) while running performance-critical code natively. JNI's overhead is negligible when done right (pointer passing, not data copying).
+
+---
+
+## Conclusion
+
+Photon is a masterclass in performance engineering. It doesn't invent new algorithms or data structures. It takes well-known techniques — vectorization, columnar storage, SIMD, native execution — and applies them with extreme care to a real production system.
+
+The result is a query engine that:
+- Runs existing Spark code with no changes
+- Delivers 3-10x speedups for CPU-bound queries
+- Scales from gigabytes to petabytes
+- Won the best industry paper at SIGMOD
+
+For database engineers, Photon is required reading. It shows what's possible when you understand the hardware, respect compatibility constraints, and execute relentlessly on the details.
+
+---
+
+## Further Reading
+
+- [Photon: A Fast Query Engine for Lakehouse Systems](https://dl.acm.org/doi/10.1145/3514221.3526054) — Original SIGMOD 2022 paper
+- [MonetDB/X100: Hyper-Pipelining Query Execution](https://www.cidrdb.org/cidr2005/papers/P19.pdf) — The foundational vectorized execution paper
+- [Databricks Photon Documentation](https://docs.databricks.com/en/compute/photon.html) — Official docs
