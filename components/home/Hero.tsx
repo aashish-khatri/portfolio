@@ -14,7 +14,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4"
           >
-             Software Engineer • Full-Stack Developer
+             Cofounder & App Lead • Mobile + Frontend Engineer
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -22,7 +22,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6"
           >
-            Building scalable solutions with modern technologies
+            Building Nada — a network-trust matrimonial app
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +30,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl leading-relaxed"
           >
-            Specialized in <strong>Go, C++, and distributed architectures.</strong> Transforming complex backend challenges into elegant, performant systems that drive business growth.
+            Cofounder & App Lead at <strong>Nada</strong>, sole author of the Flutter client for a matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs. Previously: Open Mainframe Project mentee, migrating the IBM Z Software Discovery Tool frontend from AngularJS to React.
           </motion.p>
 
           <motion.div 
@@ -61,20 +61,20 @@ export default function Hero() {
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">3+</div>
-              <div className="text-sm font-medium text-text-muted">Years Experience</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">Nada</div>
+              <div className="text-sm font-medium text-text-muted">Cofounder, App Lead</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">AWS</div>
-              <div className="text-sm font-medium text-text-muted">Cloud Expert</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">Flutter</div>
+              <div className="text-sm font-medium text-text-muted">Primary Stack</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">5+</div>
-              <div className="text-sm font-medium text-text-muted">Microservices Built</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">OMP '23</div>
+              <div className="text-sm font-medium text-text-muted">IBM Z Mentee</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">Go/C++</div>
-              <div className="text-sm font-medium text-text-muted">Primary Languages</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">IIIT</div>
+              <div className="text-sm font-medium text-text-muted">Gwalior IT</div>
             </div>
           </motion.div>
         </div>
@@ -82,4 +82,3 @@ export default function Hero() {
     </section>
   );
 }
-
