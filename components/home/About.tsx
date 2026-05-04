@@ -1,7 +1,7 @@
 "use client";
 
 import TechTag from '../shared/TechTag';
-import { Smartphone, Layout, Box } from 'lucide-react';
+import { Smartphone, Layout, Server } from 'lucide-react';
 import { MotionSection, MotionStagger, MotionItem } from '../shared/Motion';
 
 export default function About() {
@@ -13,7 +13,7 @@ export default function About() {
              About Me
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
-            Mobile & Frontend Engineer
+            Software Engineer & Systems Thinker
           </h2>
         </MotionSection>
 
@@ -23,7 +23,7 @@ export default function About() {
               Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Currently cofounder and app lead at <strong>Nada</strong> — building the Flutter client for a network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs.
             </p>
             <p>
-              Previously contributed to the IBM Z Software Discovery Tool as an Open Mainframe Project mentee (Linux Foundation, 2023), migrating its frontend from AngularJS to React. Strong focus on translating product design into shipped, tested code with deep attention to UX.
+              Previously contributed to the IBM Z Software Discovery Tool as an Open Mainframe Project mentee (Linux Foundation, 2023), migrating its frontend from AngularJS to React. Outside of shipped product work, I study distributed systems and backend architecture — and write technical deep-dives on database internals, system design, and infrastructure topics.
             </p>
             
             <div className="pt-4 space-y-4">
@@ -76,19 +76,21 @@ export default function About() {
                   </div>
                 </div>
               </MotionItem>
-              
-              {/* <MotionItem>
+
+              <MotionItem>
                 <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
                   <div className="w-12 h-12 bg-primary text-bg-primary rounded-lg mb-6 flex items-center justify-center">
-                    <Box size={24} />
+                    <Server size={24} />
                   </div>
-                  <h3 className="font-display text-2xl font-bold mb-4">AI & Machine Learning</h3>
-                   <p className="text-text-secondary mb-6">Implementing intelligent solutions with cutting-edge ML frameworks.</p>
+                  <h3 className="font-display text-2xl font-bold mb-4">Backend & Distributed Systems</h3>
+                  <p className="text-text-secondary mb-6">Active interest in distributed systems, database internals, and backend architecture. Studying and writing deep-dives on these topics.</p>
                   <div className="flex flex-wrap gap-2">
-                     <TechTag>Machine Learning</TechTag>
+                    {['Go', 'PostgreSQL', 'Redis', 'gRPC', 'GraphQL', 'Distributed Systems', 'System Design'].map(tech => (
+                      <TechTag key={tech}>{tech}</TechTag>
+                    ))}
                   </div>
                 </div>
-              </MotionItem> */}
+              </MotionItem>
             </div>
           </MotionStagger>
         </div>
