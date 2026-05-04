@@ -13,7 +13,7 @@ export const experienceData: ExperienceItem[] = [
         id: 'nada',
         role: 'Cofounder & App Lead',
         company: 'Nada',
-        period: '2024 – Present',
+        period: 'Feb 2026 – Present',
         description: 'Network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs — replacing stranger-swiping with verified introductions. Sole author of the Flutter client; cofounder builds the Vert.x + Neo4j backend.',
         achievements: [
             'Shipped alpha v1.0.0-alpha.1 (April 2026): 91k LOC across 325 Dart files with 110 test files',
