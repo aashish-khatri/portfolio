@@ -14,7 +14,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4"
           >
-             Cofounder & App Lead • Mobile + Frontend Engineer
+             Cofounder & App Lead • Software Engineer
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +30,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl leading-relaxed"
           >
-            Cofounder & App Lead at <strong>Nada</strong>, sole author of the Flutter client for a matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs. Previously: Open Mainframe Project mentee, migrating the IBM Z Software Discovery Tool frontend from AngularJS to React.
+            Cofounder & App Lead at <strong>Nada</strong>, sole author of the Flutter client for a matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs. Previously: Open Mainframe Project mentee, migrating the IBM Z Software Discovery Tool from AngularJS to React. Active interest in distributed systems and backend engineering — I <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on the topic.
           </motion.p>
 
           <motion.div 
@@ -65,8 +65,8 @@ export default function Hero() {
               <div className="text-sm font-medium text-text-muted">Cofounder, App Lead</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">Flutter</div>
-              <div className="text-sm font-medium text-text-muted">Primary Stack</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">8</div>
+              <div className="text-sm font-medium text-text-muted">Systems Deep-dives</div>
             </div>
             <div className="text-center p-4">
               <div className="font-display text-4xl font-bold text-text-primary mb-1">OMP '23</div>
