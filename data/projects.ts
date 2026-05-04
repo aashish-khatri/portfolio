@@ -13,63 +13,28 @@ export interface ProjectItem {
 
 export const projectsData: ProjectItem[] = [
     {
-        id: 'grpc-graphql-platform',
-        title: 'gRPC-GraphQL Microservices Platform',
-        category: 'Microservices Architecture',
-        year: '2024',
-        techShort: 'gRPC • GraphQL • Go',
-        description: 'Comprehensive microservices architecture using Go, gRPC for inter-service communication, and GraphQL as a unified API gateway. Implemented polyglot persistence with PostgreSQL and Elasticsearch for optimized data access patterns.',
-        techStack: ['Go', 'gRPC', 'GraphQL', 'PostgreSQL', 'Elasticsearch', 'Docker'],
+        id: 'nada',
+        title: 'Nada — Network-Trust Matrimonial App',
+        category: 'Mobile App (in flight)',
+        year: '2025',
+        techShort: 'Flutter • Riverpod • Neo4j',
+        description: 'Cofounder & App Lead. Network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs — replacing stranger-swiping with verified introductions. Sole author of the Flutter client; cofounder builds the Vert.x + Neo4j backend. Alpha v1.0.0-alpha.1 shipped April 2026.',
+        techStack: ['Flutter', 'Riverpod', 'Firebase', 'Neo4j', 'Vert.x'],
         stats: [
-            { label: 'Microservices', value: '3' },
-            { label: 'Uptime', value: '99%' }
+            { label: 'Lines of Dart', value: '91k' },
+            { label: 'Test files', value: '110' }
         ],
-        githubUrl: 'https://github.com/aashish-khatri',
         featured: true
     },
     {
-        id: 'restaurant-backend',
-        title: 'Restaurant Management Backend',
-        category: 'REST API Backend',
+        id: 'ibm-z-sdt',
+        title: 'IBM Z Software Discovery Tool',
+        category: 'Open Source Migration',
         year: '2023',
-        techShort: 'Go • MongoDB • JWT',
-        description: 'Complete backend system for restaurant operations using Go and Gin framework. Features secure JWT authentication, comprehensive REST APIs, and MongoDB integration for efficient menu, order, and customer management.',
-        techStack: ['Go', 'Gin Framework', 'MongoDB', 'JWT', 'REST API'],
-        stats: [
-            { label: 'API Design', value: 'REST' },
-            { label: 'Authentication', value: 'Secure' }
-        ],
-        githubUrl: 'https://github.com/aashish-khatri',
+        techShort: 'React • Redux Toolkit',
+        description: 'Selected as one of two Open Mainframe Project mentees (Linux Foundation, Jun–Sep 2023) to migrate the IBM Z Software Discovery Tool frontend from AngularJS to React with hooks + Redux Toolkit.',
+        techStack: ['React', 'Redux Toolkit', 'AngularJS migration'],
+        githubUrl: 'https://github.com/openmainframeproject/software-discovery-tool',
         featured: true
-    },
-    {
-        id: 'video-streaming',
-        title: 'Video Streaming Platform',
-        category: 'Backend System',
-        year: '2023',
-        techShort: 'Go • AWS',
-        description: 'Built scalable video streaming backend with Go, implementing efficient video processing and CDN integration.',
-        techStack: ['Go', 'FFmpeg', 'AWS S3'],
-        featured: false
-    },
-    {
-        id: 'ecommerce-gateway',
-        title: 'E-commerce API Gateway',
-        category: 'API Gateway',
-        year: '2023',
-        techShort: 'Node.js • GraphQL',
-        description: 'Developed unified API gateway for microservices-based e-commerce platform with rate limiting and caching.',
-        techStack: ['Node.js', 'Redis', 'GraphQL'],
-        featured: false
-    },
-    {
-        id: 'realtime-chat',
-        title: 'Real-time Chat System',
-        category: 'Real-time System',
-        year: '2023',
-        techShort: 'Go • WebSocket',
-        description: 'Created real-time messaging system with WebSocket connections, message queuing, and user presence tracking.',
-        techStack: ['Go', 'WebSocket', 'RabbitMQ'],
-        featured: false
     }
 ];
