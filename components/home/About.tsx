@@ -1,7 +1,7 @@
 "use client";
 
 import TechTag from '../shared/TechTag';
-import { Database, Layout, Box } from 'lucide-react';
+import { Smartphone, Layout, Box } from 'lucide-react';
 import { MotionSection, MotionStagger, MotionItem } from '../shared/Motion';
 
 export default function About() {
@@ -13,17 +13,17 @@ export default function About() {
              About Me
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
-            Full-Stack Developer & Systems Architect
+            Mobile & Frontend Engineer
           </h2>
         </MotionSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 mb-24">
           <MotionSection delay={0.1} className="space-y-6 text-lg text-text-secondary leading-relaxed">
             <p>
-              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior specializing in scalable backend systems and cloud-native architectures. Expert in building high-performance microservices with Go, designing distributed systems, and optimizing databases for enterprise-scale applications.
+              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Currently cofounder and app lead at <strong>Nada</strong> — building the Flutter client for a network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs.
             </p>
             <p>
-              Strong foundation in algorithmic problem-solving and system design, with hands-on experience across multiple cloud platforms. Passionate about transforming complex technical requirements into elegant, maintainable solutions that drive business growth and operational efficiency.
+              Previously contributed to the IBM Z Software Discovery Tool as an Open Mainframe Project mentee (Linux Foundation, 2023), migrating its frontend from AngularJS to React. Strong focus on translating product design into shipped, tested code with deep attention to UX.
             </p>
             
             <div className="pt-4 space-y-4">
@@ -50,12 +50,12 @@ export default function About() {
               <MotionItem>
                 <div className="bg-bg-primary p-8 rounded-xl border border-border-primary hover:border-accent hover:shadow-lg transition-all">
                   <div className="w-12 h-12 bg-primary text-bg-primary rounded-lg mb-6 flex items-center justify-center">
-                    <Database size={24} />
+                    <Smartphone size={24} />
                   </div>
-                  <h3 className="font-display text-2xl font-bold mb-4">Backend & Infrastructure</h3>
-                  <p className="text-text-secondary mb-6">Building scalable distributed systems with modern cloud infrastructure and data storage solutions.</p>
+                  <h3 className="font-display text-2xl font-bold mb-4">Mobile Development</h3>
+                  <p className="text-text-secondary mb-6">Building production Flutter apps with Riverpod state management, real-time messaging, and cloud-backed authentication.</p>
                   <div className="flex flex-wrap gap-2">
-                    {['Go', 'Node.js', 'Python', 'C++', 'PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'].map(tech => (
+                    {['Flutter', 'Dart', 'Riverpod', 'Firebase', 'WebSocket', 'REST APIs'].map(tech => (
                       <TechTag key={tech}>{tech}</TechTag>
                     ))}
                   </div>
@@ -68,9 +68,9 @@ export default function About() {
                     <Layout size={24} />
                   </div>
                   <h3 className="font-display text-2xl font-bold mb-4">Frontend Development</h3>
-                  <p className="text-text-secondary mb-6">Creating responsive, user-friendly interfaces with modern frameworks and design principles.</p>
+                  <p className="text-text-secondary mb-6">Building responsive, accessible interfaces with modern React, design-system thinking, and a focus on production quality.</p>
                   <div className="flex flex-wrap gap-2">
-                    {['React', 'Next.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Tailwind'].map(tech => (
+                    {['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind', 'HTML/CSS', 'Figma'].map(tech => (
                       <TechTag key={tech}>{tech}</TechTag>
                     ))}
                   </div>
@@ -96,4 +96,3 @@ export default function About() {
     </section>
   );
 }
-
