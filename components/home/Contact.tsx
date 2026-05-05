@@ -10,7 +10,7 @@ export default function Contact() {
             Ready to build something amazing?
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            I'm always interested in new opportunities and challenging projects. Let's discuss how we can work together.
+            I'm always open to interesting conversations, collaborations, and side projects. Feel free to reach out.
           </p>
         </div>
 
@@ -64,10 +64,10 @@ export default function Contact() {
               <div className="bg-bg-primary p-6 rounded-lg border border-border-primary mt-8">
                  <div className="font-mono text-xs text-text-muted mb-2 uppercase tracking-wide">● Current Status</div>
                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="font-medium text-text-primary">Open to opportunities</span>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="font-medium text-text-primary">Employed · Cofounder at Nada</span>
                  </div>
-                 <div className="text-sm text-text-muted">Looking for full-time positions in backend development</div>
+                 <div className="text-sm text-text-muted">Not actively looking, but open to interesting conversations</div>
               </div>
             </div>
           </div>
