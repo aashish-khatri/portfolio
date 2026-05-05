@@ -10,7 +10,7 @@ export default function Contact() {
             Ready to build something amazing?
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            I'm always open to interesting conversations, collaborations, and side projects. Feel free to reach out.
+            Not looking for new roles right now, but you can still reach out for any other reason.
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function Contact() {
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                     <span className="font-medium text-text-primary">Employed · Cofounder at Nada</span>
                  </div>
-                 <div className="text-sm text-text-muted">Not actively looking, but open to interesting conversations</div>
+                 <div className="text-sm text-text-muted">Not available for new roles or opportunities</div>
               </div>
             </div>
           </div>
