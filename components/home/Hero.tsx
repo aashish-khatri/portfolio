@@ -46,7 +46,7 @@ export default function Hero() {
               View My Work
             </Link>
             <Link 
-              href="mailto:aashishkhatri809@gmail.com" 
+              href="mailto:aashishkhatri809@gmail.com"
               className="inline-flex items-center justify-center px-8 py-4 border border-border-primary text-text-primary rounded-lg font-medium hover:bg-bg-secondary hover:border-accent transition-all"
             >
               Contact Me

@@ -25,9 +25,11 @@ export default function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <div className="font-bold text-text-primary text-lg">Email</div>
-                  <div className="text-text-secondary">aashishkhatri809@gmail.com</div>
-                  <div className="font-mono text-xs text-text-muted mt-1">Response within 24 hours</div>
+                  <a href="mailto:aashishkhatri809@gmail.com" className="hover:text-primary transition-colors block">
+                    <div className="font-bold text-text-primary text-lg">Email</div>
+                    <div className="text-text-secondary">aashishkhatri809@gmail.com</div>
+                    <div className="font-mono text-xs text-text-muted mt-1">Response within 24 hours</div>
+                  </a>
                 </div>
               </div>
 
@@ -40,7 +42,7 @@ export default function Contact() {
                 <div>
                   <a href="https://www.linkedin.com/in/aashish-khatri-375506172/" target="_blank" className="hover:text-primary transition-colors block">
                     <div className="font-bold text-text-primary text-lg">LinkedIn</div>
-                    <div className="text-text-secondary">linkedin.com/in/aashishkhatri</div>
+                    <div className="text-text-secondary">linkedin.com/in/aashish-khatri-375506172</div>
                     <div className="font-mono text-xs text-text-muted mt-1">Professional networking</div>
                   </a>
                 </div>
@@ -57,6 +59,21 @@ export default function Contact() {
                     <div className="font-bold text-text-primary text-lg">GitHub</div>
                     <div className="text-text-secondary">github.com/aashish-khatri</div>
                     <div className="font-mono text-xs text-text-muted mt-1">Code repositories</div>
+                  </a>
+                </div>
+              </div>
+
+               <div className="flex items-start space-x-6">
+                <div className="w-12 h-12 bg-primary text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                   <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                </div>
+                <div>
+                  <a href="https://x.com/whodatb78973539" target="_blank" className="hover:text-primary transition-colors block">
+                    <div className="font-bold text-text-primary text-lg">X</div>
+                    <div className="text-text-secondary">x.com/whodatb78973539</div>
+                    <div className="font-mono text-xs text-text-muted mt-1">Posts &amp; threads</div>
                   </a>
                 </div>
               </div>
