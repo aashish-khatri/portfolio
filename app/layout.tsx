@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
+import { Schibsted_Grotesk, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const schibsted = Schibsted_Grotesk({
+  variable: "--font-schibsted",
   subsets: ["latin"],
   display: "swap",
 });
 
-const dmSerifDisplay = DM_Serif_Display({
-  variable: "--font-dm-serif",
-  weight: "400",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     default: "Aashish Khatri | Frontend & Mobile Engineer",
     template: "%s | Aashish Khatri",
   },
-  description: "Founding Engineer at Nada. Built the Flutter app and its Next.js site, and carried both through store review. Writes deep-dives on distributed systems.",
+  description: "Founding Engineer at Nada. Built the Flutter app and its Next.js site. Writes deep-dives on distributed systems.",
   keywords: ["Frontend Engineer", "Mobile Engineer", "Design Engineer", "Flutter", "React", "Next.js", "TypeScript", "Riverpod"],
   authors: [{ name: "Aashish Khatri" }],
   creator: "Aashish Khatri",
@@ -76,8 +77,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${dmSerifDisplay.variable} ${jetbrainsMono.variable} font-body antialiased bg-bg-primary text-text-primary`}
+        className={`${schibsted.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-body antialiased bg-bg-primary text-text-primary`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}",
+          }}
+        />
         {children}
       </body>
     </html>

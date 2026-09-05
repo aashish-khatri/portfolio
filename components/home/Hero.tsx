@@ -1,83 +1,62 @@
-"use client";
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import ThemeDial from './ThemeDial';
+
+const tokens = [
+  { name: 'bg', v: 'var(--p-bg)' },
+  { name: 'bg-2', v: 'var(--p-bg2)' },
+  { name: 'line', v: 'var(--p-line)' },
+  { name: 'muted', v: 'var(--p-muted)' },
+  { name: 'ink', v: 'var(--p-ink)' },
+  { name: 'accent', v: 'var(--p-accent)' },
+];
 
 export default function Hero() {
   return (
-    <section className="pt-32 pb-16 md:pt-48 md:pb-32">
-      <div className="container mx-auto px-6">
-        <div className="max-w-4xl">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4"
-          >
-             Founding Engineer at Nada • Frontend / Mobile Engineer
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6"
-          >
-            Frontend and mobile engineer. Built Nada for iOS and Android.
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl leading-relaxed"
-          >
-            Founding Engineer at <strong>Nada</strong>, where I built the Flutter app and its Next.js marketing site and carried both through store review. I care about architecture rules enforced by tests, CI that catches regressions by name, and UI that feels hand-made. Previously an LFX mentee on the IBM Z Software Discovery Tool. I also <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on distributed systems.
-          </motion.p>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 mb-16"
-          >
-            <Link 
-              href="/#projects" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-bg-primary rounded-lg font-medium hover:bg-primary-light transition-all transform hover:-translate-y-0.5 shadow-lg"
-            >
-              View My Work
-            </Link>
-            <Link 
-              href="mailto:aashishkhatri809@gmail.com"
-              className="inline-flex items-center justify-center px-8 py-4 border border-border-primary text-text-primary rounded-lg font-medium hover:bg-bg-secondary hover:border-accent transition-all"
-            >
-              Contact Me
-            </Link>
-          </motion.div>
-
-          {/* Quick stats */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
-            <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">677</div>
-              <div className="text-sm font-medium text-text-muted">Commits on the app</div>
-            </div>
-            <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">2.4k</div>
-              <div className="text-sm font-medium text-text-muted">Tests in 181 files</div>
-            </div>
-            <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">2</div>
-              <div className="text-sm font-medium text-text-muted">Stores, live</div>
-            </div>
-            <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">OMP &apos;23</div>
-              <div className="text-sm font-medium text-text-muted">LFX Mentee, IBM Z</div>
-            </div>
-          </motion.div>
+    <section className="mx-auto max-w-[1320px] px-6 md:px-10 pt-10 md:pt-16 pb-16 md:pb-24">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-14 items-start">
+        <div className="lg:col-span-7">
+          <h1 className="t-display max-w-[11ch]">
+            I build the screen, and the system behind it.
+          </h1>
+          <p className="t-lede mt-10 max-w-[38ch] text-text-secondary">
+            I&apos;m Aashish Khatri, a design engineer working across frontend and mobile, in Flutter and React, from Noida. I care about type, motion and the rules that keep an interface consistent after the first release.
+          </p>
+          <div className="mt-8 flex gap-8">
+            <Link href="/#work" className="link-ul">See the work</Link>
+            <a href="mailto:aashishkhatri809@gmail.com" className="link-ul">Email me</a>
+          </div>
         </div>
+
+        {/* The specimen: one token set, five palettes. Turning the dial re-themes the whole site. */}
+        <aside className="lg:col-span-5 lg:col-start-8 lg:pt-3" aria-labelledby="specimen-title">
+          <div className="border border-border-primary">
+            <div className="px-6 pt-6 pb-5 border-b border-border-primary">
+              <h2 id="specimen-title" className="t-small text-text-muted">This site&apos;s palette</h2>
+              <div className="mt-3"><ThemeDial /></div>
+            </div>
+            <div className="px-6 py-6 grid grid-cols-6 gap-2">
+              {tokens.map((t) => (
+                <div key={t.name}>
+                  <div className="aspect-square border border-border-primary" style={{ background: t.v }} />
+                  <div className="mt-1.5 text-xs text-text-muted">{t.name}</div>
+                </div>
+              ))}
+            </div>
+            <div className="px-6 pb-6 flex items-end justify-between gap-6">
+              <div>
+                <div className="font-display text-5xl leading-none">Aa</div>
+                <div className="t-small text-text-muted mt-2">Instrument Serif, Schibsted Grotesk</div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="inline-block px-3 py-1.5 t-small bg-primary text-bg-primary">Button</span>
+                <span className="inline-block px-3 py-1.5 t-small text-accent border border-accent">Tag</span>
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 t-small text-text-muted max-w-[52ch]">
+            Five palettes, one set of tokens. Pick one and the whole site, including the blog, follows. Your choice is remembered on this device.
+          </p>
+        </aside>
       </div>
     </section>
   );

@@ -30,7 +30,7 @@ export const projectsData: ProjectItem[] = [
         description: 'Founding engineer and sole mobile engineer. Partner seekers are introduced through matchmakers and people they already know, so the client has to make a social graph feel like a feed: every card carries the human chain that brought it to you, requests travel that chain, and a second role (the matchmaker) gets a different toolkit inside the same app. Strict vertical-slice architecture, real-time messaging, hardened OTP auth, and a test suite that enforces the architecture.',
         techStack: ['Flutter', 'Dart', 'Riverpod 3', 'Dio', 'WebSockets', 'Firebase'],
         stats: [
-            { label: 'Commits (95% of app)', value: '677' },
+            { label: 'Commits', value: '677' },
             { label: 'Lines of Dart', value: '108k' },
             { label: 'Tests', value: '2,479' }
         ],

@@ -1,113 +1,171 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --color-primary: #1A1A1A;
-  --color-primary-light: #2D2D2D;
-  --color-primary-lighter: #404040;
-  --color-accent: #6B6B6B;
-  --color-accent-light: #808080;
-  --color-accent-lighter: #999999;
+/* One token set, five palettes. The dial in the hero switches data-theme on <html>. */
+:root, [data-theme="paper"] {
+  --p-bg: #F4F4F1; --p-bg2: #ECEDE8; --p-bg3: #E3E4DE; --p-bg4: #D9DAD5;
+  --p-ink: #14161A; --p-ink2: #3C4046; --p-muted: #6B7078; --p-subtle: #9A9FA6;
+  --p-line: #D5D6D0; --p-line2: #E0E1DB; --p-line3: #E9EAE5;
+  --p-accent: #0F6F66; --p-accent2: #2F8C82; --p-accent3: #DCEBE6;
+  color-scheme: light;
+}
+[data-theme="plum"] {
+  --p-bg: #F6F1F4; --p-bg2: #EEE5EB; --p-bg3: #E5D9E1; --p-bg4: #DACBD5;
+  --p-ink: #231A21; --p-ink2: #4A3B45; --p-muted: #75646F; --p-subtle: #9E8F99;
+  --p-line: #DCCBD6; --p-line2: #E6D9E1; --p-line3: #EFE5EB;
+  --p-accent: #67295F; --p-accent2: #86467D; --p-accent3: #EAD9E5;
+  color-scheme: light;
+}
+[data-theme="cobalt"] {
+  --p-bg: #EFF2F7; --p-bg2: #E4E9F1; --p-bg3: #D8DFEA; --p-bg4: #CCD5E3;
+  --p-ink: #12161F; --p-ink2: #38404F; --p-muted: #66707F; --p-subtle: #939CAA;
+  --p-line: #CBD3E0; --p-line2: #D9DFEA; --p-line3: #E4E9F1;
+  --p-accent: #1F4FD8; --p-accent2: #4A6FE0; --p-accent3: #DCE4F9;
+  color-scheme: light;
+}
+[data-theme="oxblood"] {
+  --p-bg: #F5F1EE; --p-bg2: #EDE6E1; --p-bg3: #E4DAD3; --p-bg4: #D9CDC4;
+  --p-ink: #1E1412; --p-ink2: #4A3A36; --p-muted: #766662; --p-subtle: #A09590;
+  --p-line: #DACFC8; --p-line2: #E4DBD5; --p-line3: #ECE5E0;
+  --p-accent: #7A1F2B; --p-accent2: #99404A; --p-accent3: #F0DBDE;
+  color-scheme: light;
+}
+[data-theme="ink"] {
+  --p-bg: #14161A; --p-bg2: #1C1F24; --p-bg3: #24282E; --p-bg4: #2D3239;
+  --p-ink: #F2F2EE; --p-ink2: #C9CBC7; --p-muted: #9A9FA6; --p-subtle: #6B7078;
+  --p-line: #2F343B; --p-line2: #292E34; --p-line3: #23272D;
+  --p-accent: #7FD1C4; --p-accent2: #9ADDD2; --p-accent3: #1F3B38;
+  color-scheme: dark;
+}
 
-  --color-text-primary: #0A0A0A;
-  --color-text-secondary: #404040;
-  --color-text-muted: #6B6B6B;
-  --color-text-subtle: #999999;
+@theme inline {
+  --color-primary: var(--p-ink);
+  --color-primary-light: var(--p-ink2);
+  --color-primary-lighter: var(--p-muted);
+  --color-accent: var(--p-accent);
+  --color-accent-light: var(--p-accent2);
+  --color-accent-lighter: var(--p-accent3);
 
-  --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #FAFAFA;
-  --color-bg-tertiary: #F5F5F5;
-  --color-bg-quaternary: #F0F0F0;
+  --color-text-primary: var(--p-ink);
+  --color-text-secondary: var(--p-ink2);
+  --color-text-muted: var(--p-muted);
+  --color-text-subtle: var(--p-subtle);
 
-  --color-border-primary: #E5E5E5;
-  --color-border-secondary: #EBEBEB;
-  --color-border-tertiary: #F0F0F0;
+  --color-bg-primary: var(--p-bg);
+  --color-bg-secondary: var(--p-bg2);
+  --color-bg-tertiary: var(--p-bg3);
+  --color-bg-quaternary: var(--p-bg4);
 
-  --font-display: var(--font-dm-serif), Georgia, serif;
-  --font-body: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
-  
+  --color-border-primary: var(--p-line);
+  --color-border-secondary: var(--p-line2);
+  --color-border-tertiary: var(--p-line3);
+
+  --font-display: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+  --font-body: var(--font-schibsted), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
+  --shadow-xl: 0 24px 40px -12px rgba(0, 0, 0, 0.16);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
-body {
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-  line-height: 1.6;
-  letter-spacing: -0.011em;
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-/* Custom Utilities if needed, matching legacy classes for easier porting */
-@layer utilities {
-  .text-hero {
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-  }
-  
-  .text-heading-1 {
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
-    font-weight: 600;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
+body {
+  background-color: var(--p-bg);
+  color: var(--p-ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-  .text-heading-2 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 600;
-    line-height: 1.2;
+/* Re-theme with one short crossfade on colour only. */
+html.theming body, html.theming body * {
+  transition: background-color 360ms ease, color 360ms ease, border-color 360ms ease;
+}
+
+::selection { background: var(--p-accent3); color: var(--p-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--p-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@layer utilities {
+  /* Type scale: 17 / 20 / 24 / 32 / 44 / 64 / 96 */
+  .t-display {
+    font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(3.25rem, 8.5vw, 7.5rem);
+    line-height: 0.95;
     letter-spacing: -0.015em;
   }
-
-  .text-heading-3 {
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-    font-weight: 600;
-    line-height: 1.3;
+  .t-section {
+    font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
     letter-spacing: -0.01em;
   }
-  
-  .section-padding {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+  .t-title {
+    font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+    line-height: 1.08;
   }
-  
-  /* Timeline utilities */
-  .timeline {
-    position: relative;
-    padding-left: 3rem;
-  }
+  .t-lede { font-size: clamp(1.1875rem, 1.6vw, 1.375rem); line-height: 1.45; }
+  .t-small { font-size: 0.9375rem; line-height: 1.5; }
 
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--color-border-primary);
+  .link-ul {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--p-line);
+    transition: text-decoration-color 160ms ease;
   }
+  .link-ul:hover { text-decoration-color: currentColor; }
 
-  .timeline-item {
-    position: relative;
-    margin-bottom: 3rem;
+  /* The rail: a hairline down the left gutter with one node per section. */
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--p-line);
   }
+  .rail-node {
+    position: absolute; left: -5px; top: 0.55em; width: 11px; height: 11px; border-radius: 999px;
+    background: var(--p-bg); border: 1.5px solid var(--p-ink);
+  }
+  .rail-node.is-accent { background: var(--p-accent); border-color: var(--p-accent); }
 
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -27px;
-    top: 8px;
-    width: 12px;
-    height: 12px;
-    background: var(--color-primary);
-    border-radius: 50%;
-    border: 2px solid var(--color-bg-primary);
+  .hairline-rows > * + * { border-top: 1px solid var(--p-line); }
+
+  .field {
+    width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--p-line);
+    padding: 0.75rem 0; font: inherit; color: var(--p-ink); border-radius: 0;
+    transition: border-color 160ms ease;
   }
+  .field::placeholder { color: var(--p-subtle); }
+  .field:focus, .field:focus-visible { outline: none; border-bottom-color: var(--p-ink); }
+
+  /* Legacy helpers still referenced by blog pages */
+  .text-hero { font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif; font-size: clamp(2.5rem, 8vw, 5.5rem); line-height: 1.02; letter-spacing: -0.02em; }
+  .text-heading-1 { font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif; font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.08; }
+  .text-heading-2 { font-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif; font-size: clamp(1.75rem, 4vw, 2.5rem); line-height: 1.15; }
+  .text-heading-3 { font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 500; line-height: 1.3; }
+  .section-padding { padding-top: 4rem; padding-bottom: 4rem; }
 }
