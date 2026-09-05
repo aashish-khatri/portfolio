@@ -22,7 +22,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6"
           >
-            I shipped Nada — a Flutter app, from empty repo to both stores
+            Frontend and mobile engineer. Built Nada for iOS and Android.
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +30,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl leading-relaxed"
           >
-            Founding Engineer at <strong>Nada</strong>, where I wrote ~95% of the production Flutter app and 100% of its Next.js marketing site, and carried both through store review. I care about architecture rules enforced by tests, CI that catches regressions by name, and UI that feels hand-made. Previously an LFX mentee on the IBM Z Software Discovery Tool. I also <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on distributed systems.
+            Founding Engineer at <strong>Nada</strong>, where I built the Flutter app and its Next.js marketing site and carried both through store review. I care about architecture rules enforced by tests, CI that catches regressions by name, and UI that feels hand-made. Previously an LFX mentee on the IBM Z Software Discovery Tool. I also <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on distributed systems.
           </motion.p>
 
           <motion.div 
@@ -62,7 +62,7 @@ export default function Hero() {
           >
             <div className="text-center p-4">
               <div className="font-display text-4xl font-bold text-text-primary mb-1">677</div>
-              <div className="text-sm font-medium text-text-muted">Commits, 95% of the app</div>
+              <div className="text-sm font-medium text-text-muted">Commits on the app</div>
             </div>
             <div className="text-center p-4">
               <div className="font-display text-4xl font-bold text-text-primary mb-1">2.4k</div>
