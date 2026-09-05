@@ -20,7 +20,7 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 mb-24">
           <MotionSection delay={0.1} className="space-y-6 text-lg text-text-secondary leading-relaxed">
             <p>
-              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Founding Engineer at <strong>Nada</strong>, a network-based matrimony app where partner seekers are introduced through matchmakers and people they already know. I joined alongside the founder, who owned the backend, and owned the client side end to end: product definition, the design system, the Flutter app, the marketing site and the launch creative. The app is live on the App Store and Google Play.
+              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Founding Engineer at <strong>Nada</strong>, a network-based matrimony app where partner seekers are introduced through matchmakers and people they already know. I joined alongside the founder, who built the backend, and shipped the Flutter app from an empty repo to the App Store and Google Play, along with the design system, the marketing site and the launch creative. Still learning a lot from what users tell us.
             </p>
             <p>
               Before that I built the frontend of the IBM Z Software Discovery Tool as an LFX mentee (Linux Foundation, 2023), migrating it from AngularJS to React. Outside of shipped product work, I study distributed systems and backend architecture — and write technical deep-dives on database internals, system design, and infrastructure topics.
