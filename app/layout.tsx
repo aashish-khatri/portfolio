@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     default: "Aashish Khatri | Frontend & Mobile Engineer",
     template: "%s | Aashish Khatri",
   },
-  description: "Founding Engineer at Nada. Wrote ~95% of a production Flutter app and 100% of its Next.js site, and carried both through store review. Writes deep-dives on distributed systems.",
+  description: "Founding Engineer at Nada. Built the Flutter app and its Next.js site, and carried both through store review. Writes deep-dives on distributed systems.",
   keywords: ["Frontend Engineer", "Mobile Engineer", "Design Engineer", "Flutter", "React", "Next.js", "TypeScript", "Riverpod"],
   authors: [{ name: "Aashish Khatri" }],
   creator: "Aashish Khatri",

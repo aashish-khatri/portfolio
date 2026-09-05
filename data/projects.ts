@@ -48,12 +48,8 @@ export const projectsData: ProjectItem[] = [
         kind: 'Web',
         year: '2026',
         techShort: 'Next.js 16 • React 19 • Tailwind 4 • TypeScript',
-        description: 'Built from the starter commit, 40 commits, all mine. The hero is a scroll-narrative "trust graph" that converges as you read; the how-it-works section uses iPhone mockups rendered from code, not screenshots, so a copy change never waits for an app build. Also carries the legal, support and account-deletion pages the stores require, redirects, dark/light theme, and the QR landing page printed collateral opens to.',
+        description: 'Designed and built the marketing site for Nada: a scroll-narrative hero, iPhone mockups rendered from code, dark and light themes, and the legal and support pages the app stores require.',
         techStack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4'],
-        stats: [
-            { label: 'Commits', value: '40' },
-            { label: 'Ownership', value: '100%' }
-        ],
         links: [
             { label: 'Visit site', href: 'https://nadanetwork.com' }
         ],
