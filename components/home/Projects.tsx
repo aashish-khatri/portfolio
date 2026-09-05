@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import TechTag from '../shared/TechTag';
 import { projectsData } from '@/data/projects';
 import { MotionSection, MotionStagger, MotionItem } from '../shared/Motion';
@@ -14,10 +15,10 @@ export default function Projects() {
       <div className="container mx-auto px-6">
         <MotionSection className="text-center mb-16">
           <div className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4">
-             Featured Projects
+             Selected Work
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
-            Technical Projects & Innovations
+            Shipped, not slide-ware
           </h2>
         </MotionSection>
 
@@ -26,16 +27,27 @@ export default function Projects() {
           {featuredProjects.map((project) => (
             <MotionItem key={project.id}>
               <div className="bg-bg-primary border border-border-primary rounded-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-xl hover:border-accent group h-full">
-                {/* Project Image Placeholder */}
-                <div className="w-full h-60 bg-gradient-to-br from-bg-tertiary to-bg-quaternary flex items-center justify-center text-center p-6 border-b border-border-primary group-hover:border-border-secondary transition-colors">
-                  <div>
-                    <div className="text-lg font-medium text-text-secondary mb-2">{project.category}</div>
-                    <div className="font-mono text-xs text-text-muted">{project.techShort}</div>
+                {project.image ? (
+                  <div className="relative w-full h-60 border-b border-border-primary bg-bg-tertiary">
+                    <Image
+                      src={project.image.src}
+                      alt={project.image.alt}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover object-top"
+                    />
                   </div>
-                </div>
+                ) : (
+                  <div className="w-full h-60 bg-gradient-to-br from-bg-tertiary to-bg-quaternary flex items-center justify-center text-center p-6 border-b border-border-primary group-hover:border-border-secondary transition-colors">
+                    <div>
+                      <div className="text-lg font-medium text-text-secondary mb-2">{project.category}</div>
+                      <div className="font-mono text-xs text-text-muted">{project.techShort}</div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="p-8">
-                  <div className="font-mono text-xs font-medium text-text-muted mb-3 uppercase tracking-wide">Backend • {project.year}</div>
+                  <div className="font-mono text-xs font-medium text-text-muted mb-3 uppercase tracking-wide">{project.kind} • {project.year}</div>
                   <h3 className="font-display text-2xl font-bold text-text-primary mb-3 group-hover:text-primary-light transition-colors">
                     {project.title}
                   </h3>
@@ -60,16 +72,31 @@ export default function Projects() {
                         ))}
                       </div>
                     )}
-                    {project.githubUrl && (
-                      <Link 
-                        href={project.githubUrl} 
-                        target="_blank"
-                        className="text-text-primary font-medium hover:underline flex items-center gap-1 group/link"
-                      >
-                        View Code 
-                        <span className="transform transition-transform group-hover/link:translate-x-1">→</span>
-                      </Link>
-                    )}
+                    <div className="flex items-center gap-4">
+                      {project.links?.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-text-primary font-medium hover:underline flex items-center gap-1 group/link"
+                        >
+                          {link.label}
+                          <span className="transform transition-transform group-hover/link:translate-x-1">→</span>
+                        </Link>
+                      ))}
+                      {project.githubUrl && (
+                        <Link
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-text-primary font-medium hover:underline flex items-center gap-1 group/link"
+                        >
+                          View Code
+                          <span className="transform transition-transform group-hover/link:translate-x-1">→</span>
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -77,6 +104,8 @@ export default function Projects() {
           ))}
         </MotionStagger>
 
+        {otherProjects.length > 0 && (
+          <>
         {/* Other Projects Grid */}
         <MotionSection className="text-center mb-12">
           <h3 className="font-display text-2xl font-bold text-text-primary mb-2">Additional Technical Projects</h3>
@@ -99,6 +128,8 @@ export default function Projects() {
             </MotionItem>
           ))}
         </MotionStagger>
+          </>
+        )}
       </div>
     </section>
   );

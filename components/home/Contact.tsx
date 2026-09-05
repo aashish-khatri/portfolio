@@ -40,9 +40,9 @@ export default function Contact() {
                     </svg>
                 </div>
                 <div>
-                  <a href="https://www.linkedin.com/in/aashish-khatri-375506172/" target="_blank" className="hover:text-primary transition-colors block">
+                  <a href="https://www.linkedin.com/in/aashish--khatri/" target="_blank" className="hover:text-primary transition-colors block">
                     <div className="font-bold text-text-primary text-lg">LinkedIn</div>
-                    <div className="text-text-secondary">linkedin.com/in/aashish-khatri-375506172</div>
+                    <div className="text-text-secondary">linkedin.com/in/aashish--khatri</div>
                     <div className="font-mono text-xs text-text-muted mt-1">Professional networking</div>
                   </a>
                 </div>
@@ -82,9 +82,9 @@ export default function Contact() {
                  <div className="font-mono text-xs text-text-muted mb-2 uppercase tracking-wide">● Current Status</div>
                  <div className="flex items-center space-x-3 mb-2">
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span className="font-medium text-text-primary">Employed · Cofounder at Nada</span>
+                    <span className="font-medium text-text-primary">Founding Engineer at Nada · shipped, now looking</span>
                  </div>
-                 <div className="text-sm text-text-muted">Not actively looking, but open to interesting conversations</div>
+                 <div className="text-sm text-text-muted">Open to frontend, mobile and design-engineer roles from late 2026</div>
               </div>
             </div>
           </div>

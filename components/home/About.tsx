@@ -13,17 +13,17 @@ export default function About() {
              About Me
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary">
-            Software Engineer & Systems Thinker
+            Frontend & Mobile Engineer Who Ships
           </h2>
         </MotionSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 mb-24">
           <MotionSection delay={0.1} className="space-y-6 text-lg text-text-secondary leading-relaxed">
             <p>
-              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Currently cofounder and app lead at <strong>Nada</strong> — building the Flutter client for a network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs.
+              Integrated (B.Tech+M.Tech) graduate from IIIT Gwalior. Founding Engineer at <strong>Nada</strong>, a network-based matrimony app where partner seekers are introduced through matchmakers and people they already know. I joined alongside the founder, who owned the backend, and owned everything the user sees: product definition, the design system, the Flutter app, the marketing site and the launch creative. The app is live on the App Store and Google Play.
             </p>
             <p>
-              Previously contributed to the IBM Z Software Discovery Tool as an Open Mainframe Project mentee (Linux Foundation, 2023), migrating its frontend from AngularJS to React. Outside of shipped product work, I study distributed systems and backend architecture — and write technical deep-dives on database internals, system design, and infrastructure topics.
+              Before that I built the frontend of the IBM Z Software Discovery Tool as an LFX mentee (Linux Foundation, 2023), migrating it from AngularJS to React. Outside of shipped product work, I study distributed systems and backend architecture — and write technical deep-dives on database internals, system design, and infrastructure topics.
             </p>
             
             <div className="pt-4 space-y-4">
@@ -53,9 +53,9 @@ export default function About() {
                     <Smartphone size={24} />
                   </div>
                   <h3 className="font-display text-2xl font-bold mb-4">Mobile Development</h3>
-                  <p className="text-text-secondary mb-6">Building production Flutter apps with Riverpod state management, real-time messaging, and cloud-backed authentication.</p>
+                  <p className="text-text-secondary mb-6">Shipped a 108k-line production Flutter app: vertical-slice architecture on Riverpod 3, WebSocket messaging, hardened OTP auth, golden and accessibility tests, and store-review compliance on both platforms.</p>
                   <div className="flex flex-wrap gap-2">
-                    {['Flutter', 'Dart', 'Riverpod', 'Firebase', 'WebSocket', 'REST APIs'].map(tech => (
+                    {['Flutter', 'Dart', 'Riverpod 3', 'Dio', 'WebSockets', 'Firebase', 'Golden tests', 'Play Console', 'App Store Connect'].map(tech => (
                       <TechTag key={tech}>{tech}</TechTag>
                     ))}
                   </div>
@@ -68,9 +68,9 @@ export default function About() {
                     <Layout size={24} />
                   </div>
                   <h3 className="font-display text-2xl font-bold mb-4">Frontend Development</h3>
-                  <p className="text-text-secondary mb-6">Building responsive, accessible interfaces with modern React, design-system thinking, and a focus on production quality.</p>
+                  <p className="text-text-secondary mb-6">Built nadanetwork.com from the starter commit in Next.js 16 and React 19, plus a token-based design system with 8 palettes and full dark mode, and hand-written brand motion.</p>
                   <div className="flex flex-wrap gap-2">
-                    {['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind', 'HTML/CSS', 'Figma'].map(tech => (
+                    {['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'HTML/CSS', 'Remotion', 'Figma', 'GitHub Actions'].map(tech => (
                       <TechTag key={tech}>{tech}</TechTag>
                     ))}
                   </div>

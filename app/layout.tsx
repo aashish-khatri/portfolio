@@ -26,11 +26,11 @@ const siteUrl = "https://aashish-khatri.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Aashish Khatri | Software Engineer",
+    default: "Aashish Khatri | Frontend & Mobile Engineer",
     template: "%s | Aashish Khatri",
   },
-  description: "Specialized in Go, React, and cloud-native microservices. Building scalable solutions with modern technologies and clean architecture.",
-  keywords: ["Software Engineer", "Full-Stack Developer", "Go", "React", "Microservices", "Cloud Architecture", "Backend Engineer"],
+  description: "Founding Engineer at Nada. Wrote ~95% of a production Flutter app and 100% of its Next.js site, and carried both through store review. Writes deep-dives on distributed systems.",
+  keywords: ["Frontend Engineer", "Mobile Engineer", "Design Engineer", "Flutter", "React", "Next.js", "TypeScript", "Riverpod"],
   authors: [{ name: "Aashish Khatri" }],
   creator: "Aashish Khatri",
   openGraph: {
@@ -38,21 +38,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Aashish Khatri - Portfolio",
-    title: "Aashish Khatri | Software Engineer",
-    description: "Specialized in Go, React, and cloud-native microservices. Building scalable solutions with modern technologies.",
+    title: "Aashish Khatri | Frontend & Mobile Engineer",
+    description: "Founding Engineer at Nada. Shipped a production Flutter app to both stores and built its Next.js site.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Aashish Khatri - Software Engineer",
+        alt: "Aashish Khatri - Frontend & Mobile Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aashish Khatri | Software Engineer",
-    description: "Specialized in Go, React, and cloud-native microservices.",
+    title: "Aashish Khatri | Frontend & Mobile Engineer",
+    description: "Founding Engineer at Nada. Shipped a production Flutter app to both stores and built its Next.js site.",
     images: ["/og-image.png"],
   },
   robots: {
