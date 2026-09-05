@@ -14,7 +14,7 @@ export const experienceData: ExperienceItem[] = [
         role: 'Founding Engineer',
         company: 'Nada Network Private Limited',
         period: 'Jan 2026 – Present',
-        description: 'Network-based matrimony app ("Trust meets love"): partner seekers are introduced through matchmakers and people they already know, on a social graph. Live on the App Store and Google Play. Joined alongside the founder, who owned the backend; I owned everything the user sees — product definition, design system, Flutter app, marketing site and launch creative.',
+        description: 'Network-based matrimony app: partner seekers are introduced through matchmakers and people they already know, on a social graph. Joined alongside the founder and took the app from an empty repo to the App Store and Google Play: the Flutter client, design system, marketing site and launch creative.',
         achievements: [
             'Wrote ~95% of the production Flutter app (677 commits, 108k lines of Dart, 2,479 tests) and carried it through 21 builds from alpha to both stores',
             'Architected the app as strict vertical slices (13 feature modules, 19 repositories, 48 screens) on Riverpod 3 with a Dio JWT-refresh queue and no code generation; the rules are enforced by architecture tests',
