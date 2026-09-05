@@ -14,7 +14,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-mono text-xs font-medium uppercase tracking-widest text-text-muted mb-4"
           >
-             Cofounder & App Lead • Software Engineer
+             Founding Engineer at Nada • Frontend / Mobile Engineer
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -22,7 +22,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6"
           >
-            Building Nada — a network-trust matrimonial app
+            I shipped Nada — a Flutter app, from empty repo to both stores
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +30,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl leading-relaxed"
           >
-            Cofounder & App Lead at <strong>Nada</strong>, sole author of the Flutter client for a matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs. Previously: Open Mainframe Project mentee, migrating the IBM Z Software Discovery Tool from AngularJS to React. Active interest in distributed systems and backend engineering — I <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on the topic.
+            Founding Engineer at <strong>Nada</strong>, where I wrote ~95% of the production Flutter app and 100% of its Next.js marketing site, and carried both through store review. I care about architecture rules enforced by tests, CI that catches regressions by name, and UI that feels hand-made. Previously an LFX mentee on the IBM Z Software Discovery Tool. I also <Link href="/blog" className="underline decoration-dotted underline-offset-4 hover:text-accent">write deep-dives</Link> on distributed systems.
           </motion.p>
 
           <motion.div 
@@ -61,20 +61,20 @@ export default function Hero() {
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">Nada</div>
-              <div className="text-sm font-medium text-text-muted">Cofounder, App Lead</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">677</div>
+              <div className="text-sm font-medium text-text-muted">Commits, 95% of the app</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">8</div>
-              <div className="text-sm font-medium text-text-muted">Systems Deep-dives</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">2.4k</div>
+              <div className="text-sm font-medium text-text-muted">Tests in 181 files</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">OMP '23</div>
-              <div className="text-sm font-medium text-text-muted">IBM Z Mentee</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">2</div>
+              <div className="text-sm font-medium text-text-muted">Stores, live</div>
             </div>
             <div className="text-center p-4">
-              <div className="font-display text-4xl font-bold text-text-primary mb-1">IIIT</div>
-              <div className="text-sm font-medium text-text-muted">Gwalior IT</div>
+              <div className="font-display text-4xl font-bold text-text-primary mb-1">OMP &apos;23</div>
+              <div className="text-sm font-medium text-text-muted">LFX Mentee, IBM Z</div>
             </div>
           </motion.div>
         </div>

@@ -11,28 +11,32 @@ export interface ExperienceItem {
 export const experienceData: ExperienceItem[] = [
     {
         id: 'nada',
-        role: 'Cofounder & App Lead',
-        company: 'Nada',
-        period: 'Feb 2026 – Present',
-        description: 'Network-trust matrimonial app where brokers and matchmakers introduce partner-seekers through real social graphs — replacing stranger-swiping with verified introductions. Sole author of the Flutter client; cofounder builds the Vert.x + Neo4j backend.',
+        role: 'Founding Engineer',
+        company: 'Nada Network Private Limited',
+        period: 'Jan 2026 – Present',
+        description: 'Network-based matrimony app ("Trust meets love"): partner seekers are introduced through matchmakers and people they already know, on a social graph. Live on the App Store and Google Play. Joined alongside the founder, who owned the backend; I owned everything the user sees — product definition, design system, Flutter app, marketing site and launch creative.',
         achievements: [
-            'Shipped alpha v1.0.0-alpha.1 (April 2026): 91k LOC across 325 Dart files with 110 test files',
-            'Built phases 1–4 end-to-end: Firebase phone OTP, 15-step profile wizard with photo crop, swipe-feed Discover with connection-chain visualization, direct + via-broker interest requests, real-time WebSocket chat, broker-mode network feed',
-            'Designed the 8-palette design system, integrated Firebase Analytics + Crashlytics, established Riverpod-based feature-first architecture'
+            'Wrote ~95% of the production Flutter app (677 commits, 108k lines of Dart, 2,479 tests) and carried it through 21 builds from alpha to both stores',
+            'Architected the app as strict vertical slices (13 feature modules, 19 repositories, 48 screens) on Riverpod 3 with a Dio JWT-refresh queue and no code generation; the rules are enforced by architecture tests',
+            'Built real-time messaging over WebSockets and hardened phone-OTP auth (Firebase → backend JWT): stale-session clearing, reCAPTCHA false-timeout fix, and a generation counter whose regression guard CI greps for by test name',
+            'Wrote the test strategy — unit, provider, repository, screen, golden, accessibility, API-contract and architecture-rule suites — plus CI and a tag-triggered APK + AAB release workflow',
+            'Shipped privacy-preserving contact sync (client-side hashing) and the store-review compliance surface: UGC report/block, consent management, privacy manifest, 18+ gating',
+            'Owned the token-based design system (8 jewel-tone palettes, full dark mode) and hand-wrote the brand motion as custom painters and controllers',
+            'Built the marketing site from the starter commit in Next.js 16 / React 19 / Tailwind 4: scroll-narrative trust-graph hero, code-rendered iPhone mockups, legal pages, and the QR landing page for printed collateral'
         ],
-        techStack: ['Flutter', 'Dart', 'Riverpod', 'Firebase', 'Neo4j', 'Vert.x', 'WebSocket']
+        techStack: ['Flutter', 'Dart', 'Riverpod 3', 'Dio', 'WebSockets', 'Firebase', 'Next.js 16', 'React 19', 'TypeScript', 'Tailwind 4', 'GitHub Actions']
     },
     {
         id: 'ibm-z',
-        role: 'Software Engineer Mentee',
-        company: 'Open Mainframe Project / IBM Z (LFX Mentorship)',
+        role: 'Software Engineering Mentee (LFX Mentorship, Frontend)',
+        company: 'The Linux Foundation · Open Mainframe Project',
         period: 'Jun 2023 – Sep 2023',
-        description: 'Selected as one of two mentees to modernize legacy mainframe applications through frontend architecture improvements and UX enhancements.',
+        description: 'Selected as one of two mentees to build the frontend of the IBM Z Software Discovery Tool in React under Linux Foundation mentors, taking it from Figma wireframes to a responsive, shipped UI.',
         achievements: [
-            'Migrated frontend codebase from AngularJS to React, modernizing the application stack and improving maintainability',
-            'Redesigned iconography and key pages in Figma, improving visual branding and user understanding',
-            'Implemented compact component layouts and intuitive navigation patterns across the discovery interface'
+            'Migrated the frontend from AngularJS to React with hooks and Redux Toolkit, modernising the stack and improving maintainability',
+            'Structured the app as code-split, modular components and tuned first contentful paint and time-to-first-byte',
+            'Made large result sets usable with server-side pagination and filtering; redesigned iconography and key pages in Figma'
         ],
-        techStack: ['React', 'AngularJS', 'Figma', 'UI/UX Design', 'Frontend Migration']
+        techStack: ['React', 'Redux Toolkit', 'JavaScript', 'Figma', 'AngularJS migration']
     }
 ];
