@@ -50,6 +50,7 @@ export const projectsData: ProjectItem[] = [
         techShort: 'Next.js 16 • React 19 • Tailwind 4 • TypeScript',
         description: 'Designed and built the marketing site for Nada: a scroll-narrative hero, iPhone mockups rendered from code, dark and light themes, and the legal and support pages the app stores require.',
         techStack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4'],
+        image: { src: '/projects/nada-site.png', alt: 'nadanetwork.com hero: India\'s first social network for arranged marriages' },
         links: [
             { label: 'Visit site', href: 'https://nadanetwork.com' }
         ],
